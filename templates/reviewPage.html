@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase Page</title>
+</head>
+
+<body>
+    <h3>Airline: {{airline}}, Flight: {{flight}}, Departure Period: {{departure_period}}</h3>
+    <form action="/review" method="POST">
+        <input type="hidden" name="airline" value="{{airline}}">
+        <input type="hidden" name="flight" value="{{flight}}">
+        <input type="hidden" name="departure_period" value="{{departure_period}}">
+
+        <label for="rating">Rating out of 5: </label>
+        <input type="number" id="rating" name="rating" min="1" max="5" required> <br>
+
+        <label for="comment">Comment: </label>
+        <textarea id="comment" name="comment" required></textarea><br>
+
+        <input type="submit" value="Leave Review">
+    </form>
+    <br><br>
+
+    <a href="/">Go Back</a>
+</body>
+
+</html>

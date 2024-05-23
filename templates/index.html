@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+</head>
+
+<body>
+    <h1>Welcome</h1>
+
+    <h3>Search for a flight</h3>
+    <form action="/flightInfo" method="GET">
+        <label for="src">Source city/airport name: </label>
+        <input type="text" id="src" name="src" required><br>
+
+        <label for="dst">Destination city/airport name: </label>
+        <input type="text" id="dst" name="dst" required><br>
+
+        <label for="departure_date">Departure date</label>
+        <input type="date" id="departure_date" name="departure_date" required><br>
+
+        <input type="submit" value="Search">
+    </form>
+
+    <br>
+    {% if flightData %}
+    <table>
+        <tr>
+            <th>Airline</th>
+            <th>Flight</th>
+            <th>Departure Period</th>
+            <th>Departure</th>
+            <th>Arrival Period</th>
+            <th>Arrival</th>
+        </tr>
+        {% for flight in flightData %}
+        <tr>
+            <td>{{flight[0]}}</td>
+            <td>{{flight[1]}}</td>
+            <td>{{flight[2]}}</td>
+            <td>{{flight[3]}}</td>
+            <td>{{flight[4]}}</td>
+            <td>{{flight[5]}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+    <br><br>
+
+    <h3>Get flight status</h3>
+    <form action="/flightStatus" method="GET">
+        <label for="airline">Airline name: </label>
+        <input type="text" id="airline" name="airline" required><br>
+
+        <label for="flight">Flight number: </label>
+        <input type="text" id="flight" name="flight" required><br>
+
+        <label for="departure_date">Departure date: </label>
+        <input type="date" id="departure_date" name="departure_date" required><br>
+
+        <input type="submit" value="Find">
+    </form>
+
+    <br>
+    {% if statusData %}
+    <table>
+        <tr>
+            <th>Airline</th>
+            <th>Flight</th>
+            <th>Departure Period</th>
+            <th>Flight Status</th>
+        </tr>
+
+        <tr>
+            <td>{{statusData[0]}}</td>
+            <td>{{statusData[1]}}</td>
+            <td>{{statusData[2]}}</td>
+            <td>{{statusData[8]}}</td>
+        </tr>
+    </table>
+    {% endif %}
+    <br><br>
+
+    <a href="/login">Login</a> <br>
+    <a href="/customerReg">Customer Sign Up</a> <br>
+    <a href="/staffReg">Staff Sign Up</a>
+</body>
+
+</html>

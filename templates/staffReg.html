@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Register</title>
+    <style>
+        form {
+            text-align: center;
+            margin-top: 20vh;
+        }
+    </style>
+</head>
+
+<body>
+    <form action="/staffRegAuth" method="POST">
+        {% if error %}
+        <p> {{error}} </p>
+        {% endif %}
+        <h1>Sign Up</h1>
+        <label for="username">Username: </label>
+        <input type="text" id="username" name="username" required> <br>
+
+        <label for="email">Email: </label>
+        <input type="text" id="email" name="email" required> <br>
+
+        <label for="fname">First Name: </label>
+        <input type="text" id="fname" name="fname" required> <br>
+
+        <label for="lname">Last Name: </label>
+        <input type="text" id="lname" name="lname" required> <br>
+
+        <label for="phone">Phone Number: </label>
+        <input type="text" id="phone" name="phone" required> <br>
+
+        <label for="DOB">DOB: </label>
+        <input type="date" id="DOB" name="DOB" required> <br>
+
+        <label for="airline">Airline: </label>
+        <input type="text" id="airline" name="airline" required> <br>
+
+        <label for="password">Password: </label>
+        <input type="text" id="password" name="password" required> <br>
+
+        <input type="submit" value="Sign Up">
+    </form>
+    <a href="/">Go Back</a>
+</body>
+
+</html>

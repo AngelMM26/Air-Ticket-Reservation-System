@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        form {
+            text-align: center;
+            margin-top: 20vh;
+            /* Optional: Adjust margin for vertical centering */
+        }
+    </style>
+</head>
+
+<body>
+    <form action="/loginAuth" method="POST">
+        {% if error %}
+        <p> {{error}} </p>
+        {% endif %}
+        <h1>Login</h1>
+        <label for="username">Username: </label>
+        <input type="text" id="username" name="username" required> <br>
+
+        <label for="password">Password: </label>
+        <input type="password" name="password" required> <br>
+
+        <label for="selection">Login as: </label>
+        <select id="selection" name="selection">
+            <option value="customer">Customer</option>
+            <option value="staff">Staff</option>
+        </select> <br>
+
+        <input type="submit" value="Login">
+    </form>
+    <a href="/">Go Back</a>
+</body>
+
+</html>

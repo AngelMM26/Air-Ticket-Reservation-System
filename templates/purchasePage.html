@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase Page</title>
+</head>
+
+<body>
+    <h3>Airline: {{airline}}, Flight: {{flight}}, Departure Period: {{departure_period}}</h3>
+    {% if available %}
+    <form action="/purchase" method="POST">
+        <select id="ticket" name="ticket">
+            {% for ticket in available %}
+            <option value="{{ticket[0]}}">{{ticket[0]}} : {{ticket[1]}}</option>
+            {% endfor %}
+        </select> <br>
+
+        <label for="selection">Card Type: </label>
+        <select id="selection" name="selection">
+            <option value="Credit">Credit</option>
+            <option value="Debit">Debit</option>
+        </select> <br>
+
+        <label for="cardNum">Card Number: </label>
+        <input type="text" id="cardNum" name="cardNum" required> <br>
+
+        <label for="cardName">Card Name: </label>
+        <input type="text" id="cardName" name="cardName" required><br>
+
+        <label for="exp">Card Expiration: </label>
+        <input type="date" id="exp" name="exp" required><br>
+
+        <label for="fname">First Name: </label>
+        <input type="text" id="fname" name="fname" required> <br>
+
+        <label for="lname">Last Name: </label>
+        <input type="text" id="lname" name="lname" required> <br>
+
+        <label for="DOB">DOB: </label>
+        <input type="date" id="DOB" name="DOB" required> <br>
+
+        <input type="hidden" name="airline" value="{{airline}}">
+        <input type="hidden" name="flight" value="{{flight}}">
+        <input type="hidden" name="departure_period" value="{{departure_period}}">
+
+        <input type="submit" value="Purchase">
+    </form>
+    {% else %}
+    <h3>No tickets available</h3>
+    {% endif %}
+    <br><br>
+
+    <a href="/">Go Back</a>
+</body>
+
+</html>

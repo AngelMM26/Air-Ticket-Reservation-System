@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Home</title>
+</head>
+
+<body>
+    <h1>Welcome, {{fname}}!</h1>
+
+    {% if maintenanceError %}
+    <p>{{maintenanceError}}</p>
+    {% endif %}
+    {% if mainMessage %}
+    <p>{{mainMessage}}</p>
+    {% endif %}
+    {% if customerFlightError %}
+    <p>{{customerFlightError}}</p>
+    {% endif %}
+    {% if messageFrequent %}
+    <p>{{messageFrequent}}</p>
+    {% endif %}
+
+    <h3>View airline flights</h3>
+    <form action="/airlineFlights" method="GET">
+        <label for="start">Starting Range (Optional): </label>
+        <input type="date" id="start" name="start"><br>
+
+        <label for="end">Ending Range (Optional): </label>
+        <input type="date" id="end" name="end"><br>
+
+        <input type="submit" value="View">
+    </form>
+
+    <br>
+    {% if flightData %}
+    <table>
+        <tr>
+            <th>Flight</th>
+        </tr>
+        {% for flight in flightData %}
+        <tr>
+            <td>{{flight[0]}}</td>
+            <td><a href="/flightCustomers?flight={{flight[0]}}&departure_period={{flight[1]}}">View
+                    customers in flight</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+
+    {% if customerData %}
+    <p>Airline: {{airline}}, Flight: {{flight}}, Departure Period: {{deptDate}}</p>
+    <table>
+        <tr>
+            <th>Email</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+        </tr>
+        {% for customer in customerData %}
+        <tr>
+            <td>{{customer[0]}}</td>
+            <td>{{customer[1]}}</td>
+            <td>{{customer[2]}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+    <br><br>
+
+    <h3>Create a new flight</h3>
+    <form action="/createFlight" method="POST">
+        <label for="flight">Flight: </label>
+        <input type="text" id="flight" name="flight" required> <br>
+
+        <label for="departure_period">Departure_period: </label>
+        <input type="datetime-local" id="departure_period" name="departure_period" required> <br>
+
+        <label for="src">Departure: </label>
+        <input type="text" id="src" name="src" required> <br>
+
+        <label for="arrival_period">Arrival Period: </label>
+        <input type="datetime-local" id="arrival_period" name="arrival_period" required> <br>
+
+        <label for="dst">Arrival: </label>
+        <input type="text" id="dst" name="dst" required> <br>
+
+        <label for="price">Base Price: </label>
+        <input type="number" id="price" name="price" step="0.01" required> <br>
+
+        <label for="airplaneID">Airplane ID: </label>
+        <input type="number" id="airplaneID" name="airplaneID" required> <br>
+
+        <label for="status">Change Status to: </label>
+        <select id="status" name="status">
+            <option value="on-time">On-time</option>
+            <option value="delayed">Delayed</option>
+            <option value="canceled">Canceled</option>
+        </select><br>
+
+        <input type="submit" value="Create">
+    </form>
+
+    <br>
+
+    {% if flightError %}
+    <p>{{flightError}}</p>
+    {% endif %}
+    {% if flightMessage %}
+    <p>{{flightMessage}}</p>
+    {% endif %}
+    <br><br>
+
+    <h3>Change a flight's status</h3>
+    <form action="/changeStatus" method="POST">
+        <label for="flight">Flight: </label>
+        <input type="text" id="flight" name="flight" required><br>
+
+        <label for="departure_period">Departure Period: </label>
+        <input type="datetime-local" id="departure_period" name="departure_period" required><br>
+
+        <label for="selection">Change Status to: </label>
+        <select id="selection" name="selection">
+            <option value="on-time">On-time</option>
+            <option value="delayed">Delayed</option>
+            <option value="canceled">Canceled</option>
+        </select><br>
+
+        <input type="submit" value="Change">
+    </form>
+    <br><br><br>
+
+    <h3>Get flight status</h3>
+    <form action="flightStatus" method="GET">
+        <label for="airline">Airline name: </label>
+        <input type="text" id="airline" name="airline" required><br>
+
+        <label for="flight">Flight number: </label>
+        <input type="text" id="flight" name="flight" required><br>
+
+        <label for="departure_date">Departure date: </label>
+        <input type="date" id="departure_date" name="departure_date" required><br>
+
+        <input type="submit" value="Find">
+    </form>
+
+    <br>
+    {% if statusData %}
+    <table>
+        <tr>
+            <th>Airline</th>
+            <th>Flight</th>
+            <th>Departure Period</th>
+            <th>Flight Status</th>
+        </tr>
+
+        <tr>
+            <td>{{statusData[0]}}</td>
+            <td>{{statusData[1]}}</td>
+            <td>{{statusData[2]}}</td>
+            <td>{{statusData[8]}}</td>
+        </tr>
+    </table>
+    {% endif %}
+    <br><br>
+
+    <h3>Add an airplane</h3>
+    <form action="/addPlane" method="POST">
+        <label for="airplaneID">AirplaneID: </label>
+        <input type="number" id="airplaneID" name="airplaneID" min="0" required><br>
+
+        <label for="numSeats">Number of seats: </label>
+        <input type="number" id="numSeats" name="numSeats" min="0" required><br>
+
+        <label for="man">Manufacturer: </label>
+        <input type="text" id="man" name="man" required><br>
+
+        <label for="model">Model: </label>
+        <input type="text" id="model" name="model" required><br>
+
+        <label for="manDate">Manufacturing Date: </label>
+        <input type="date" id="manDate" name="manDate" required><br>
+
+        <input type="submit" value="Add">
+    </form>
+    <br>
+
+    {% if airplaneError %}
+    <p>{{airplaneError}}</p>
+    {% endif %}
+    {% if airplaneMessage %}
+    <p>{{airplaneMessage}}</p>
+    {% endif %}
+    <br><br>
+
+    <h3>Add an airport</h3>
+    <form action="/addPort" method="POST">
+        <label for="code">Airport code: </label>
+        <input type="text" id="code" name="code" required><br>
+
+        <label for="name">Airport name: </label>
+        <input type="text" id="name" name="name" required><br>
+
+        <label for="city">City: </label>
+        <input type="text" id="city" name="city" required><br>
+
+        <label for="country">Country: </label>
+        <input type="text" id="country" name="country" required><br>
+
+        <label for="terminals">Number of Terminals: </label>
+        <input type="number" id="terminals" name="terminals" min="0" required><br>
+
+        <label for="type">Type: </label>
+        <select id="type" name="type">
+            <option value="Domestic">Domestic</option>
+            <option value="International">International</option>
+            <option value="Both">Both</option>
+        </select><br>
+
+        <input type="submit" value="Add">
+    </form>
+
+    <br>
+    {% if airportError %}
+    <p>{{airportError}}</p>
+    {% endif %}
+    {% if airportMessage %}
+    <p>{{airportMessage}}</p>
+    {% endif %}
+    <br><br>
+
+    <h3>View flight ratings</h3>
+    <form action="/viewReviews" method="GET">
+        <label for="flight">Flight: </label>
+        <input type="text" id="flight" name="flight" required><br>
+
+        <label for="departure_date">Departure date: </label>
+        <input type="datetime-local" id="departure_date" name="departure_date" required><br>
+
+        <input type="submit" value="View">
+    </form>
+
+    <br>
+    {{flightReview}}
+    {% if avgRating %}
+    <p>Average Rating: {{avgRating[0]}}</p>
+    {% endif %}
+    {% if reviews %}
+    <table>
+        <tr>
+            <th>Email</th>
+            <th>First name</th>
+            <th>Last name</th>
+            <th>Rating</th>
+            <th>Comment</th>
+        </tr>
+        {% for review in reviews %}
+        <tr>
+            <td>{{review[0]}}</td>
+            <td>{{review[1]}}</td>
+            <td>{{review[2]}}</td>
+            <td>{{review[3]}}</td>
+            <td>{{review[4]}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+    <br><br>
+
+    <h3>Schedule maintenance</h3>
+    <form action="/maintenance" method="POST">
+        <label for="mainID">MaintenanceID: </label>
+        <input type="number" id="mainID" name="mainID" required><br>
+
+        <label for="airplaneID">AirplaneID: </label>
+        <input type="text" id="airplaneID" name="airplaneID" required><br>
+
+        <label for="start">Maintenance start: </label>
+        <input type="datetime-local" id="start" name="start" required><br>
+
+        <label for="end">Maintenance end: </label>
+        <input type="datetime-local" id="end" name="end" required><br>
+
+        <input type="submit" value="Schedule">
+    </form>
+
+    <br>
+    <br><br>
+
+    <h3>View most frequent customer</h3>
+    <form action="/frequentCustomer" method="GET">
+        <input type="submit" value="View">
+    </form>
+    <br>
+
+    {% if mostFrequent %}
+    <p>Most frequent costumer: {mostFrequent[0]}</p>
+    {% endif %}
+    <br><br>
+
+
+    <h3>View customer flights</h3>
+    <form action="/viewCustomerFlights" method="GET">
+        <label for="customer">Customer email: </label>
+        <input type="text" id="customer" name="customer"> <br>
+        <input type="submit" value="View">
+    </form>
+    <br>
+
+    {% if customerFlights %}
+    <table>
+        <tr>
+            <th>Flight</th>
+            <th>Departure Period</th>
+        </tr>
+        {% for flight in customerFlights %}
+        <tr>
+            <td>{{flight[0]}}</td>
+            <td>{{flight[1]}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+    <br><br>
+
+
+    <h3>View earned revenue</h3>
+    <form action="/viewRevenue" method="GET">
+        <input type="submit" value="View">
+    </form>
+    {% if yearTotal %}
+    <p>Total revenue made the past year: ${{yearTotal[0]}}</p>
+    {% endif %}
+    {% if yearTotal %}
+    <p>Total revenue made the past month: ${{monthTotal[0]}}</p>
+    {% endif %}
+    <br><br><br>
+
+    <h3>Add phonenumber</h3>
+    <form action="/addPhone" method="POST">
+        <label for="phone">Phone Number: </label>
+        <input type="text" id="phone" name="phone" required> <br>
+
+        <input type="submit" value="Add">
+    </form>
+
+    <br><br><br>
+
+    <h3>Add Email</h3>
+    <form action="/addEmail" method="POST">
+        <label for="email">Email: </label>
+        <input type="text" id="email" name="email" required> <br>
+
+        <input type="submit" value="Add">
+    </form>
+
+    <br><br><br>
+
+    <a href="/logout">Logout</a>
+
+</body>
+
+</html>

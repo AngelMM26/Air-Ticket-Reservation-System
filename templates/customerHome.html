@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Home</title>
+</head>
+
+<body>
+    <h1>Welcome, {{fname}}!</h1>
+
+    {% if purchase %}
+    <p>{{purchase}}</p>
+    {% endif %}
+
+    {% if cancel %}
+    <p>{{cancel}}</p>
+    {% endif %}
+
+    {% if review %}
+    <p>{{review}}</p>
+    {% endif %}
+
+    <h3>View my flights</h3>
+    <form action="/viewFlights" method="GET">
+        <input type="submit" value="View">
+    </form>
+
+    <br>
+    {% if viewData %}
+    <table>
+        <tr>
+            <th>Ticket</th>
+            <th>Airline</th>
+            <th>Flight</th>
+            <th>Departure Period</th>
+            <th>Departure</th>
+            <th>Arrival Period</th>
+            <th>Arrival</th>
+        </tr>
+        {% for flight in viewData %}
+        <tr>
+            <td>{{flight[0]}}</td>
+            <td>{{flight[1]}}</td>
+            <td>{{flight[2]}}</td>
+            <td>{{flight[3]}}</td>
+            <td>{{flight[4]}}</td>
+            <td>{{flight[5]}}</td>
+            <td>{{flight[6]}}</td>
+            <td>
+                <form action="/cancel" method="POST">
+                    <input type="hidden" name="ticket" value="{{flight[0]}}">
+                    <input type="hidden" name="airline" value="{{flight[1]}}">
+                    <input type="hidden" name="flight" value="{{flight[2]}}">
+                    <input type="hidden" name="departure_period" value="{{flight[3]}}">
+                    <input type="submit" value="Cancel">
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+    <br><br>
+
+    <h3>Search for a flight</h3>
+    <form action="/flightInfo" method="GET">
+        <label for="src">Source code: </label>
+        <input type="text" id="src" name="src" required><br>
+
+        <label for="dst">Destination code: </label>
+        <input type="text" id="dst" name="dst" required><br>
+
+        <label for="departure_date">Departure date</label>
+        <input type="date" id="departure_date" name="departure_date" required><br>
+
+        <input type="submit" value="Search">
+    </form>
+
+    <br>
+    {% if flightData %}
+    <table>
+        <tr>
+            <th>Airline</th>
+            <th>Flight</th>
+            <th>Departure Period</th>
+            <th>Departure</th>
+            <th>Arrival Period</th>
+            <th>Arrival</th>
+        </tr>
+        {% for flight in flightData %}
+        <tr>
+            <td>{{flight[0]}}</td>
+            <td>{{flight[1]}}</td>
+            <td>{{flight[2]}}</td>
+            <td>{{flight[3]}}</td>
+            <td>{{flight[4]}}</td>
+            <td>{{flight[5]}}</td>
+            <td><a href="/purchasePage?airline={{flight[0]}}&flight={{flight[1]}}&departure_period={{flight[2]}}">Purchase
+                    a
+                    Ticket</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+
+    <br><br>
+    <h3>Get flight status</h3>
+    <form action="/flightStatus" method="GET">
+        <label for="airline">Airline name: </label>
+        <input type="text" id="airline" name="airline" required><br>
+
+        <label for="flight">Flight number: </label>
+        <input type="text" id="flight" name="flight" required><br>
+
+        <label for="departure_date">Arrival/Departure date: </label>
+        <input type="date" id="departure_date" name="departure_date" required><br>
+
+        <input type="submit" value="Find">
+    </form>
+
+    <br>
+    {% if statusData %}
+    <table>
+        <tr>
+            <th>Airline</th>
+            <th>Flight</th>
+            <th>Departure Period</th>
+            <th>Flight Status</th>
+        </tr>
+
+        <tr>
+            <td>{{statusData[0]}}</td>
+            <td>{{statusData[1]}}</td>
+            <td>{{statusData[2]}}</td>
+            <td>{{statusData[8]}}</td>
+        </tr>
+    </table>
+    {% endif %}
+    <br><br>
+
+    <h3>Rate and comment on a past flight</h3>
+    <form action="/potReview" method="GET">
+        <input type="submit" value="View">
+    </form>
+
+    <br>
+    {% if reviewData %}
+    <table>
+        <tr>
+            <th>Airline</th>
+            <th>Flight</th>
+            <th>Departure Period</th>
+        </tr>
+        {% for flight in reviewData %}
+        <tr>
+            <td>{{flight[0]}}</td>
+            <td>{{flight[1]}}</td>
+            <td>{{flight[2]}}</td>
+            <td>
+                <a
+                    href="/reviewPage?airline={{flight[0]}}&flight={{flight[1]}}&departure_period={{flight[2]}}">Review</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+    <br><br>
+
+    {% if trackError %}
+    <p>{{trackError}}</p>
+    {% endif %}
+
+    <h3>Track spending</h3>
+    <form action="/trackSpending" method="GET">
+        <label for="start">Starting Range (Optional): </label>
+        <input type="date" id="start" name="start"><br>
+
+        <label for="end">Ending Range (Optional): </label>
+        <input type="date" id="end" name="end"><br>
+
+        <input type="submit" value="Track">
+    </form>
+
+    {% if monthlyData %}
+    <p>Total amount spent from {{start}} to {{end}}: ${{total[0]}}</p>
+    <table>
+        <tr>
+            <th>Month</th>
+            <th>Total</th>
+        </tr>
+        {% for info in monthlyData %}
+        <tr>
+            <td>{{info[0]}}</td>
+            <td>{{info[1]}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p>Total amount spent: $0</p>
+    {% endif %}
+    <br><br><br>
+
+    <h3>Add phone number</h3>
+    <form action="/addPhone" method="POST">
+        <label for="phone">Phone Number: </label>
+        <input type="text" id="phone" name="phone" required> <br>
+
+        <input type="submit" value="Add">
+    </form>
+
+    <br><br><br>
+
+    <a href="/logout">Logout</a>
+</body>
+
+</html>
