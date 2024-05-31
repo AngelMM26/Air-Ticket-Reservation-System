@@ -8,14 +8,23 @@
 </head>
 
 <body>
-    <h3>Airline: {{airline}}, Flight: {{flight}}, Departure Period: {{departure_period}}</h3>
     {% if available %}
     <form action="/purchase" method="POST">
+        <h3>Airline: {{airline}}, Flight: {{flight}}, Departure Period: {{departure_period}}</h3>
         <select id="ticket" name="ticket">
             {% for ticket in available %}
             <option value="{{ticket[0]}}">{{ticket[0]}} : {{ticket[1]}}</option>
             {% endfor %}
         </select> <br>
+
+        {% if available2 %}
+        <h3>Airline: {{airline2}}, Returning Flight: {{flight2}}, Returning Departure Period: {{departure_period2}}</h3>
+        <select id="ticket2" name="ticket2">
+            {% for ticket2 in available2 %}
+            <option value="{{ticket2[0]}}">{{ticket2[0]}} : {{ticket2[1]}}</option>
+            {% endfor %}
+        </select> <br><br>
+        {% endif %}
 
         <label for="selection">Card Type: </label>
         <select id="selection" name="selection">
@@ -44,6 +53,10 @@
         <input type="hidden" name="airline" value="{{airline}}">
         <input type="hidden" name="flight" value="{{flight}}">
         <input type="hidden" name="departure_period" value="{{departure_period}}">
+        <input type="hidden" name="airline2" value="{{airline2}}">
+        <input type="hidden" name="flight2" value="{{flight2}}">
+        <input type="hidden" name="departure_period2" value="{{departure_period2}}">
+
 
         <input type="submit" value="Purchase">
     </form>

@@ -12,14 +12,15 @@ INSERT INTO airplane VALUES("United", 3, 50, "Boeing", "B-101", "2015-05-02");
 INSERT INTO maintenance VALUES("2024-06-27 13:25:25", "2024-06-29 07:25:25", "United", 1 );
 INSERT INTO maintenance VALUES("2024-01-27 13:25:25", "2024-01-29 07:25:25", "United", 2 );
 
-INSERT INTO airport VALUES("JFK", "JFK", "NYC", "USA", 4, "Both");
-INSERT INTO airport VALUES("BOS", "BOS", "Boston", "USA", 2, "Both");
-INSERT INTO airport VALUES("PVG", "PVG", "Shanghai", "China", 2, "Both");
-INSERT INTO airport VALUES("BEI", "BEI", "Beijing", "China", 2, "Both");
-INSERT INTO airport VALUES("SFO", "SFO", "San Fransisco", "USA", 4, "Both");
-INSERT INTO airport VALUES("LAX", "LAX", "Los Angeles", "USA", 2, "Both");
-INSERT INTO airport VALUES("HKA", "HKA", "Hong Kong", "China", 2, "Both");
-INSERT INTO airport VALUES("SHEN", "SHEN", "Shenzhen", "China", 2, "Both");
+INSERT INTO airport VALUES("JFK", "John F. Kennedy International Airport", "NYC", "USA", 4, "Both");
+INSERT INTO airport VALUES("BOS", "Logan International Airport", "Boston", "USA", 2, "Both");
+INSERT INTO airport VALUES("PVG", "Shanghai Pudong International Airport", "Shanghai", "China", 2, "Both");
+INSERT INTO airport VALUES("BEI", "Beijing Capital International Airport", "Beijing", "China", 2, "Both");
+INSERT INTO airport VALUES("SFO", "San Francisco International Airport", "San Francisco", "USA", 4, "Both");
+INSERT INTO airport VALUES("LAX", "Los Angeles International Airport", "Los Angeles", "USA", 2, "Both");
+INSERT INTO airport VALUES("HKA", "Hong Kong International Airport", "Hong Kong", "China", 2, "Both");
+INSERT INTO airport VALUES("SHEN", "Shenzhen Bao'an International Airport", "Shenzhen", "China", 2, "Both");
+
 
 
 -- INSERT INTO customer VALUES("testcustomer@nyu.edu", "Jon", "Snow", "81dc9bdb52d04dc20036dbd8313ed055", 1555, "Jay St", NULL, "Brooklyn", "New York", NULL, 54321, "2025-12-24", "USA", "1999-12-19");
@@ -60,6 +61,9 @@ INSERT INTO ticket VALUES("17", 300.00, "United", "207", "2024-08-04 13:25:25");
 INSERT INTO ticket VALUES("18", 300.00, "United", "207", "2024-08-04 13:25:25");
 INSERT INTO ticket VALUES("19", 3000.00, "United", "296", "2024-05-30 13:25:25");
 INSERT INTO ticket VALUES("20", 3000.00, "United", "296", "2024-05-30 13:25:25");
+INSERT INTO ticket VALUES("21", 300.00, "United", "102", "2024-02-12 13:25:25");
+INSERT INTO ticket VALUES("22", 400.00, "United", "206", "2024-07-04 13:25:25");
+INSERT INTO ticket VALUES("23", 400.00, "United", "206", "2024-07-04 13:25:25");
 
 -- INSERT INTO review VALUES('testcustomer@nyu.edu', 'United', '102', '2024-02-12 13:25:25', '4', 'Very Comfortable');
 -- INSERT INTO review VALUES('user1@nyu.edu', 'United', '102', '2024-02-12 13:25:25', '5', 'Relaxing, check-in and onboarding very professional');

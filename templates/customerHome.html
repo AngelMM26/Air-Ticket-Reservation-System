@@ -28,6 +28,7 @@
     </form>
 
     <br>
+    {% if viewRequest %}
     {% if viewData %}
     <table>
         <tr>
@@ -60,6 +61,9 @@
         </tr>
         {% endfor %}
     </table>
+    {% else %}
+    <p>No upcoming flights</p>
+    {% endif %}
     {% endif %}
     <br><br>
 
@@ -74,11 +78,54 @@
         <label for="departure_date">Departure date</label>
         <input type="date" id="departure_date" name="departure_date" required><br>
 
+        <label for="arrival_date">Arrival date (Round trip only)</label>
+        <input type="date" id="arrival_date" name="arrival_date"><br>
+
         <input type="submit" value="Search">
     </form>
 
     <br>
-    {% if flightData %}
+    {% if flightRequest %}
+    {% if flightData and roundTrip %}
+    <table>
+        <tr>
+            <th>Airline (Outgoing)</th>
+            <th>Flight (Outgoing)</th>
+            <th>Departure Period (Outgoing)</th>
+            <th>Departure (Outgoing)</th>
+            <th>Arrival Period (Outgoing)</th>
+            <th>Arrival (Outgoing)</th>
+            <th>Airline (Return)</th>
+            <th>Flight (Return)</th>
+            <th>Departure Period (Return)</th>
+            <th>Departure (Return)</th>
+            <th>Arrival Period (Return)</th>
+            <th>Arrival (Return)</th>
+        </tr>
+        {% for return in roundTrip %}
+        {% for flight in flightData %}
+        <tr>
+            <td>{{flight[0]}}</td>
+            <td>{{flight[1]}}</td>
+            <td>{{flight[2]}}</td>
+            <td>{{flight[3]}}</td>
+            <td>{{flight[4]}}</td>
+            <td>{{flight[5]}}</td>
+            <td>{{return[0]}}</td>
+            <td>{{return[1]}}</td>
+            <td>{{return[2]}}</td>
+            <td>{{return[3]}}</td>
+            <td>{{return[4]}}</td>
+            <td>{{return[5]}}</td>
+            <td><a
+                    href="/purchasePage?airline={{flight[0]}}&flight={{flight[1]}}&departure_period={{flight[2]}}&airline2={{return[0]}}&flight2={{return[1]}}&departure_period2={{return[2]}}">Purchase
+                    a
+                    Ticket</a></td>
+        </tr>
+        {% endfor %}
+        {% endfor %}
+    </table>
+    {% elif flightData %}
     <table>
         <tr>
             <th>Airline</th>
@@ -102,7 +149,11 @@
         </tr>
         {% endfor %}
     </table>
+    {% else %}
+    <p>No flights found</p>
     {% endif %}
+    {% endif %}
+    <br><br>
 
     <br><br>
     <h3>Get flight status</h3>
@@ -120,6 +171,7 @@
     </form>
 
     <br>
+    {% if statusRequest %}
     {% if statusData %}
     <table>
         <tr>
@@ -136,6 +188,9 @@
             <td>{{statusData[8]}}</td>
         </tr>
     </table>
+    {% else %}
+    <p>Flight status cannot be found</p>
+    {% endif %}
     {% endif %}
     <br><br>
 
@@ -145,6 +200,7 @@
     </form>
 
     <br>
+    {% if reviewRequest %}
     {% if reviewData %}
     <table>
         <tr>
@@ -164,6 +220,9 @@
         </tr>
         {% endfor %}
     </table>
+    {% else %}
+    <p>No past flights to review</p>
+    {% endif %}
     {% endif %}
     <br><br>
 
@@ -182,6 +241,8 @@
         <input type="submit" value="Track">
     </form>
 
+    <br>
+    {% if trackRequest %}
     {% if monthlyData %}
     <p>Total amount spent from {{start}} to {{end}}: ${{total[0]}}</p>
     <table>
@@ -199,7 +260,8 @@
     {% else %}
     <p>Total amount spent: $0</p>
     {% endif %}
-    <br><br><br>
+    {% endif %}
+    <br><br>
 
     <h3>Add phone number</h3>
     <form action="/addPhone" method="POST">
@@ -209,7 +271,11 @@
         <input type="submit" value="Add">
     </form>
 
-    <br><br><br>
+    <br>
+    {% if addRequest %}
+    <p>Successfully added information</p>
+    {% endif %}
+    <br><br>
 
     <a href="/logout">Logout</a>
 </body>

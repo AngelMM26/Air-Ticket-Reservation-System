@@ -57,15 +57,21 @@ def getFlightInfo():
     srcAirport = request.args.get("src")
     dstAirport = request.args.get("dst")
     deptDate = request.args.get("departure_date")
+    arrivalDate = request.args.get("arrival_date")
     cursor = db.cursor()
     query = "SELECT * FROM flight WHERE departure = %s AND arrival = %s AND departure_period LIKE %s"
+    query2 = "SELECT * FROM flight WHERE departure = %s AND arrival = %s AND arrival_period LIKE %s"
     cursor.execute(query, (srcAirport, dstAirport, deptDate + "%"))
     flightData = cursor.fetchall()
+    roundTrip = ()
+    if(arrivalDate):
+        cursor.execute(query2, (dstAirport, srcAirport, arrivalDate + "%"))
+        roundTrip = cursor.fetchall()
     cursor.close()
     if "username" in session:
         if(session.get("role") == "customer"):
-            return render_template('customerHome.html', fname=session["fname"], flightData=flightData)
-    return render_template('index.html', flightData=flightData)
+            return render_template('customerHome.html', fname=session["fname"], flightRequest=True, flightData=flightData, roundTrip=roundTrip)
+    return render_template('index.html', flightRequest=True, flightData=flightData, roundTrip=roundTrip)
     
 @views.route("/flightStatus", methods=["GET"]) 
 def getFlightStatus():
@@ -79,9 +85,9 @@ def getFlightStatus():
     cursor.close()
     if "username" in session:
         if(session.get("role") == "customer"):
-            return render_template('customerHome.html', fname=session["fname"], statusData=statusData)
-        return render_template('staffHome.html', fname=session["fname"], statusData=statusData)
-    return render_template('index.html', statusData=statusData)
+            return render_template('customerHome.html', fname=session["fname"], statusRequest=True, statusData=statusData)
+        return render_template('staffHome.html', fname=session["fname"], statusRequest=True, statusData=statusData)
+    return render_template('index.html', statusRequest=True, statusData=statusData)
 
 @views.route("/login")
 @loginSatisfied
@@ -195,8 +201,8 @@ def staffRegAuth():
         query2 = "INSERT INTO staff_phone VALUES(%s, %s);"
         query3 = "INSERT INTO staff_email VALUES(%s, %s)"
         cursor.execute(query, (username, passwordHash, fname, lname, dob, airline))
-        cursor.execute(query2, (username, email))
-        cursor.execute(query3, (username, phone))
+        cursor.execute(query2, (username, phone))
+        cursor.execute(query3, (username, email))
         db.commit()
         cursor.close()
         session["username"] = username
@@ -229,11 +235,11 @@ def viewFlights():
     currentTime = datetime.now()
     cursor = db.cursor()
     query = """SELECT T.ticket_id, F.airline_name, F.flight_num, F.departure_period, F.departure, F.arrival_period, F.arrival 
-            FROM flight AS F NATURAL JOIN ticket AS T NATURAL JOIN purchase WHERE email = %s AND departure_period > %s"""    
+            FROM flight AS F NATURAL JOIN ticket AS T NATURAL JOIN purchase WHERE email = %s AND departure_period > %s ORDER BY departure_period"""    
     cursor.execute(query, (session.get("username"), currentTime))
     viewData = cursor.fetchall()
     cursor.close()
-    return render_template('customerHome.html', fname=session["fname"], viewData=viewData)
+    return render_template('customerHome.html', fname=session["fname"], viewRequest=True ,viewData=viewData)
 
 @views.route("/purchasePage", methods=["GET"])
 @loginRequired
@@ -242,19 +248,27 @@ def purchasePage():
     airline = request.args.get("airline")
     flight = request.args.get("flight")
     deptDate = request.args.get("departure_period")
+    airline2 = request.args.get("airline2")
+    flight2 = request.args.get("flight2")
+    deptDate2 = request.args.get("departure_period2")
     cursor = db.cursor()
     query = """SELECT ticket_id, calculated_price FROM ticket WHERE airline_name = %s AND flight_num = %s AND departure_period = %s AND 
             ticket_id NOT IN (SELECT ticket_id FROM purchase)"""
     cursor.execute(query, (airline, flight, deptDate))
     available = cursor.fetchall()
+    available2 = ()
+    if(airline2):
+        cursor.execute(query, (airline2, flight2, deptDate2))
+        available2 = cursor.fetchall()
     cursor.close()
-    return render_template('purchasePage.html', available=available, airline=airline, flight=flight, departure_period=deptDate)
+    return render_template('purchasePage.html', available=available, airline=airline, flight=flight, departure_period=deptDate, available2=available2, airline2=airline2, flight2=flight2, departure_period2=deptDate2)
 
 @views.route("/purchase", methods=["POST"])
 @loginRequired
 @customerOnly
 def purchase():
     ticket = request.form.get("ticket")
+    ticket2 = request.form.get("ticket2")
     cardType = request.form.get("selection")
     cardNum = request.form.get("cardNum")
     cardName = request.form.get("cardName")
@@ -265,6 +279,9 @@ def purchase():
     airline = request.form.get("airline")
     flight = request.form.get("flight")
     deptDate = request.form.get("departure_period")
+    airline2 = request.form.get("airline2")
+    flight2 = request.form.get("flight2")
+    deptDate2 = request.form.get("departure_period2")
     cursor = db.cursor()
     query = """INSERT INTO purchase(ticket_id, email, card_type, card_num, card_name, expiration, fname, lname, DOB) 
             VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)"""
@@ -278,11 +295,22 @@ def purchase():
     info = cursor.fetchone()
     base = info[0]
     totalTickets = info[1]
-    if(0.3*(totalTickets) >= ticketLeft):
+    if(0.2*(totalTickets) >= ticketLeft):
         newPrice = (base*Decimal(0.25)) + base
         query4 = """UPDATE ticket SET calculated_price = %s WHERE airline_name = %s AND flight_num = %s AND departure_period = %s AND 
                  ticket_id NOT IN (SELECT ticket_id FROM purchase)"""
         cursor.execute(query4, (newPrice, airline, flight, deptDate))
+    if(ticket2):
+        cursor.execute(query, (ticket2, session.get("username"), cardType, cardNum, cardName, exp, fname, lname, dob))
+        cursor.execute(query2, (airline2, flight2, deptDate2))
+        ticketLeft = cursor.fetchone()[0]
+        cursor.execute(query3, (airline2, flight2, deptDate2))
+        info = cursor.fetchone()
+        base = info[0]
+        totalTickets = info[1]
+        if(0.2*(totalTickets) >= ticketLeft):
+            newPrice = (base*Decimal(0.25)) + base
+            cursor.execute(query4, (newPrice, airline2, flight2, deptDate2))
     db.commit()
     cursor.close()
     purchase="Purchase complete."
@@ -332,7 +360,7 @@ def potReview():
             flight_num, departure_period FROM review)"""
     cursor.execute(query,(session.get("username"), currentTime))
     reviewData = cursor.fetchall()
-    return render_template('customerHome.html', fname=session["fname"], reviewData=reviewData)
+    return render_template('customerHome.html', fname=session["fname"], reviewRequest=True, reviewData=reviewData)
     
 @views.route("/reviewPage", methods=["GET"])
 @loginRequired
@@ -383,7 +411,7 @@ def track():
     cursor.execute(query2, (session.get("username"), start, end))
     monthlyData = cursor.fetchall()
     cursor.close()
-    return render_template('customerHome.html', fname=session["fname"], total=total, monthlyData=monthlyData, start=start, end=end)
+    return render_template('customerHome.html', fname=session["fname"], trackRequest= True, total=total, monthlyData=monthlyData, start=start, end=end)
 
 @views.route("/airlineFlights", methods=["GET"])
 @loginRequired
@@ -638,13 +666,13 @@ def addPhone():
         cursor.execute(query, (session.get("username"), phone))
         db.commit()
         cursor.close()
-        return redirect(url_for('views.customerHome'))
+        return render_template('customerHome.html', fname=session["fname"], addRequest=True)
     else:
         query = "INSERT INTO staff_phone VALUES (%s, %s)"
         cursor.execute(query, (session.get("username"), phone))
         db.commit()
         cursor.close()
-        return redirect(url_for('views.staffHome'))
+        return render_template('staffHome.html', fname=session["fname"], addRequest=True)
     
 @views.route("/addEmail", methods=["POST"])
 @loginRequired
