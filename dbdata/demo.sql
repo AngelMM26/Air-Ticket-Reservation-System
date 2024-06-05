@@ -1,10 +1,5 @@
 INSERT INTO airline VALUES("United");
 
--- INSERT INTO staff VALUES ("admin", "e2fc714c4727ee9395f324cd2e7f331f", "Max", "Mejia", "2000-09-18", "United");
--- INSERT INTO staff_email VALUES("admin", "staff@nyu.edu");
--- INSERT INTO staff_phone VALUES("admin", "111-2222-3333");
--- INSERT INTO staff_phone VALUES("admin", "444-5555-6666");
-
 INSERT INTO airplane VALUES("United", 1, 4, "Boeing", "B-101", "2013-05-02");
 INSERT INTO airplane VALUES("United", 2, 4, "Airbus", "A-101", "2011-05-02");
 INSERT INTO airplane VALUES("United", 3, 50, "Boeing", "B-101", "2015-05-02");
@@ -20,18 +15,6 @@ INSERT INTO airport VALUES("SFO", "San Francisco International Airport", "San Fr
 INSERT INTO airport VALUES("LAX", "Los Angeles International Airport", "Los Angeles", "USA", 2, "Both");
 INSERT INTO airport VALUES("HKA", "Hong Kong International Airport", "Hong Kong", "China", 2, "Both");
 INSERT INTO airport VALUES("SHEN", "Shenzhen Bao'an International Airport", "Shenzhen", "China", 2, "Both");
-
-
-
--- INSERT INTO customer VALUES("testcustomer@nyu.edu", "Jon", "Snow", "81dc9bdb52d04dc20036dbd8313ed055", 1555, "Jay St", NULL, "Brooklyn", "New York", NULL, 54321, "2025-12-24", "USA", "1999-12-19");
--- INSERT INTO customer VALUES("user1@nyu.edu", "Alice", "Bob", "81dc9bdb52d04dc20036dbd8313ed055", 5405, "Jay Street", NULL, "Brooklyn", "New York", NULL, 54322, "2025-12-25", "USA", "1999-11-19");
--- INSERT INTO customer VALUES("user2@nyu.edu", "Cathy", "Wood", "81dc9bdb52d04dc20036dbd8313ed055", 1702, "Jay Street", NULL, "Brooklyn", "New York", NULL, 54323, "2025-10-24", "USA", "1999-10-19");
--- INSERT INTO customer VALUES("user3@nyu.edu", "Trudy", "Jones", "81dc9bdb52d04dc20036dbd8313ed055", 1890, "Jay Street", NULL, "Brooklyn", "New York", NULL, 54324, "2025-09-24", "USA", "1999-09-19");
-
--- INSERT INTO customer_phone VALUES("testcustomer@nyu.edu", "123-4321-4321");
--- INSERT INTO customer_phone VALUES("user1@nyu.edu", "123-4322-4322");
--- INSERT INTO customer_phone VALUES("user2@nyu.edu", "123-4323-4323");
--- INSERT INTO customer_phone VALUES("user3@nyu.edu", "123-4324-4324");
 
 INSERT INTO flight VALUES("United", "102", "2024-02-12 13:25:25", "SFO", "2024-02-12 16:50:25", "LAX", 300.00, 3, "on-time");
 INSERT INTO flight VALUES("United", "104", "2024-03-04 13:25:25", "PVG", "2024-03-04 16:50:25", "BEI", 300.00, 3, "on-time");
@@ -65,11 +48,6 @@ INSERT INTO ticket VALUES("21", 300.00, "United", "102", "2024-02-12 13:25:25");
 INSERT INTO ticket VALUES("22", 400.00, "United", "206", "2024-07-04 13:25:25");
 INSERT INTO ticket VALUES("23", 400.00, "United", "206", "2024-07-04 13:25:25");
 
--- INSERT INTO review VALUES('testcustomer@nyu.edu', 'United', '102', '2024-02-12 13:25:25', '4', 'Very Comfortable');
--- INSERT INTO review VALUES('user1@nyu.edu', 'United', '102', '2024-02-12 13:25:25', '5', 'Relaxing, check-in and onboarding very professional');
--- INSERT INTO review VALUES('user2@nyu.edu', 'United', '102', '2024-02-12 13:25:25', '3', 'Satisfied and will use the same flight again');
--- INSERT INTO review VALUES('testcustomer@nyu.edu', 'United', '104', '2024-03-04 13:25:25', '1', 'Customer Care services are not good');
--- INSERT INTO review VALUES('user1@nyu.edu', 'United', '104', '2024-03-04 13:25:25', '5', 'Comfortable journey and Professional');
 
 
 

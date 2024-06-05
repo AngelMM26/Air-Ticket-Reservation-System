@@ -22,6 +22,9 @@
     {% if messageFrequent %}
     <p>{{messageFrequent}}</p>
     {% endif %}
+    {% if addContactRequest %}
+    <p>{{addContactRequest}}</p>
+    {% endif %}
 
     <h3>View airline flights</h3>
     <form action="/airlineFlights" method="GET">
@@ -35,6 +38,7 @@
     </form>
 
     <br>
+    {% if flightRequest %}
     {% if flightData %}
     <table>
         <tr>
@@ -48,6 +52,9 @@
         </tr>
         {% endfor %}
     </table>
+    {% else %}
+    <p>No flights found</p>
+    {% endif %}
     {% endif %}
 
     {% if customerData %}
@@ -146,6 +153,7 @@
     </form>
 
     <br>
+    {% if statusRequest %}
     {% if statusData %}
     <table>
         <tr>
@@ -162,6 +170,9 @@
             <td>{{statusData[8]}}</td>
         </tr>
     </table>
+    {% else %}
+    <p>Flight status cannot be found</p>
+    {% endif %}
     {% endif %}
     <br><br>
 
@@ -242,11 +253,10 @@
     </form>
 
     <br>
-    {{flightReview}}
+    {% if reviewRequest %}
+    <p>{{flightReview}}</p>
     {% if avgRating %}
     <p>Average Rating: {{avgRating[0]}}</p>
-    {% endif %}
-    {% if reviews %}
     <table>
         <tr>
             <th>Email</th>
@@ -265,6 +275,9 @@
         </tr>
         {% endfor %}
     </table>
+    {% else %}
+    <p>No reviews available for this flight</p>
+    {% endif %}
     {% endif %}
     <br><br>
 
@@ -292,10 +305,10 @@
     <form action="/frequentCustomer" method="GET">
         <input type="submit" value="View">
     </form>
-    <br>
 
+    <br>
     {% if mostFrequent %}
-    <p>Most frequent costumer: {mostFrequent[0]}</p>
+    <p>Most frequent costumer: {{mostFrequent[0]}}</p>
     {% endif %}
     <br><br>
 
@@ -309,6 +322,7 @@
     <br>
 
     {% if customerFlights %}
+    <p>Customer: {{customer}}</p>
     <table>
         <tr>
             <th>Flight</th>
@@ -329,13 +343,21 @@
     <form action="/viewRevenue" method="GET">
         <input type="submit" value="View">
     </form>
-    {% if yearTotal %}
+
+    <br>
+    {% if revenueRequest %}
+    {% if yearTotal[0] %}
     <p>Total revenue made the past year: ${{yearTotal[0]}}</p>
+    {% else %}
+    <p>Total revenue made the past year: $0</p>
     {% endif %}
-    {% if yearTotal %}
+    {% if monthTotal[0] %}
     <p>Total revenue made the past month: ${{monthTotal[0]}}</p>
+    {% else %}
+    <p>Total revenue made the past month: $0</p>
     {% endif %}
-    <br><br><br>
+    {% endif %}
+    <br><br>
 
     <h3>Add phonenumber</h3>
     <form action="/addPhone" method="POST">

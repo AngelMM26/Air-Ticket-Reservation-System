@@ -100,7 +100,6 @@ def loginAuth():
     password = request.form.get("password")
     person = request.form.get("selection")
     passwordHash = hashlib.md5(password.encode()).hexdigest()
-    print(passwordHash)
     cursor = db.cursor()
     if(person == "customer"):
         query = "SELECT fname FROM customer WHERE email = %s AND password = %s"
@@ -433,7 +432,7 @@ def airlineFlights():
     cursor.execute(query, (session.get("airline"), start, end))
     flightData = cursor.fetchall()
     cursor.close()
-    return render_template('staffHome.html', fname=session["fname"], flightData=flightData)
+    return render_template('staffHome.html', fname=session["fname"], flightRequest=True, flightData=flightData)
 
 @views.route("/flightCustomers", methods=["GET"])
 @loginRequired
@@ -574,17 +573,17 @@ def viewReviews():
     flight = request.args.get("flight")
     deptDate = request.args.get("departure_date")
     cursor = db.cursor()
-    query = """SELECT AVG(rating) FROM flight AS F NATURAL JOIN review AS R WHERE F.airline_name = %s AND F.flight_num = %s AND 
-            F.departure_period = %s GROUP BY F.airline_name, F.flight_num, F.departure_period"""
+    query = """SELECT AVG(R.rating) FROM flight AS F NATURAL JOIN review AS R WHERE F.airline_name = %s AND F.flight_num = %s AND 
+            DATE(F.departure_period) = %s AND TIME(F.departure_period) LIKE %s GROUP BY F.airline_name, F.flight_num, F.departure_period"""
     query2 = """SELECT C.email, C.fname, C.lname, R.rating, R.comment FROM flight AS F NATURAL JOIN review AS R NATURAL JOIN customer AS C 
-            WHERE F.airline_name = %s AND F.flight_num = %s AND F.departure_period = %s"""
-    cursor.execute(query, (session.get("airline"), flight, deptDate))
+            WHERE F.airline_name = %s AND F.flight_num = %s AND DATE(F.departure_period) = %s AND TIME(F.departure_period) LIKE %s"""
+    cursor.execute(query, (session.get("airline"), flight, deptDate[0:10], deptDate[11:] + "%"))
     avgRating = cursor.fetchone()
-    cursor.execute(query2, (session.get("airline"), flight, deptDate))
+    cursor.execute(query2, (session.get("airline"), flight, deptDate[0:10], deptDate[11:] + "%"))
     reviews = cursor.fetchall()
     cursor.close()
-    flightReview = f"Flight Num {flight} with departure {deptDate}"
-    return render_template('staffHome.html', fname=session["fname"], flightReview=flightReview, avgRating=avgRating, reviews=reviews)
+    flightReview = f"Flight {flight} with departure {deptDate}"
+    return render_template('staffHome.html', fname=session["fname"], reviewRequest=True, flightReview=flightReview, avgRating=avgRating, reviews=reviews)
 
 @views.route("/maintenance", methods=["POST"])
 @loginRequired
@@ -636,25 +635,26 @@ def viewCustomerFlights():
     customerFlights = cursor.fetchall()
     cursor.close()
     if(customerFlights):
-        return render_template('staffHome.html', fname=session["fname"], customerFlights=customerFlights)
-    customerFlightError = "Error: Customer does not exist or been on any flights"
+        return render_template('staffHome.html', fname=session["fname"], customerFlights=customerFlights, customer=customer)
+    customerFlightError = f"Error: Customer with email: {customer} does not exist or been on any flights"
     return render_template('staffHome.html', fname=session["fname"], customerFlightError=customerFlightError)
 
 @views.route("/viewRevenue", methods=["GET"])
 @loginRequired
 @staffOnly
 def viewRevenue():
-    currDate = datetime.now().date()
+    currDate = datetime.now()
     monthAgo = datetime(currDate.year, currDate.month, 1).date()
     yearAgo = datetime(currDate.year, 1, 1).date()
     cursor = db.cursor()
-    query = "SELECT SUM(calculated_price) AS total FROM ticket NATURAL JOIN purchase WHERE airline_name = %s AND period BETWEEN %s and %s"
+    query = "SELECT SUM(calculated_price) AS total FROM ticket NATURAL JOIN purchase WHERE airline_name = %s AND period BETWEEN %s AND %s"
     cursor.execute(query, (session.get("airline"), monthAgo, currDate))
     monthTotal = cursor.fetchone()
     cursor.execute(query, (session.get("airline"), yearAgo, currDate))
     yearTotal = cursor.fetchone()
     cursor.close()
-    return render_template('staffHome.html', fname=session["fname"], monthTotal=monthTotal, yearTotal=yearTotal)
+    print(monthTotal, yearTotal)
+    return render_template('staffHome.html', fname=session["fname"], revenueRequest=True, monthTotal=monthTotal, yearTotal=yearTotal)
 
 @views.route("/addPhone", methods=["POST"])
 @loginRequired
@@ -672,7 +672,7 @@ def addPhone():
         cursor.execute(query, (session.get("username"), phone))
         db.commit()
         cursor.close()
-        return render_template('staffHome.html', fname=session["fname"], addRequest=True)
+        return render_template('staffHome.html', fname=session["fname"], addContactRequest=f"Successfully added {phone} as a contact")
     
 @views.route("/addEmail", methods=["POST"])
 @loginRequired
@@ -684,7 +684,7 @@ def addEmail():
     cursor.execute(query, (session.get("username"), email))
     db.commit()
     cursor.close()
-    return redirect(url_for('views.staffHome'))
+    return render_template('staffHome.html', fname=session["fname"], addContactRequest=f"Successfully added {email} as a contact")
    
 
     
