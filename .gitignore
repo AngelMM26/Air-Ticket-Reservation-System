@@ -1,2 +1,6 @@
 __pycache__/
+<<<<<<< HEAD
 *.pyc
+=======
+*.pyc
+>>>>>>> f42631f (Created a new util.py file containing connection to database and wrappers.)
