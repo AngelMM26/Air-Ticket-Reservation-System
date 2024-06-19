@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer Home</title>
+    <link rel="stylesheet" href="static/views.css">
 </head>
 
 <body>
@@ -24,42 +25,47 @@
 
     <h3>View my flights</h3>
     <form action="/viewFlights" method="GET">
-        <input type="submit" value="View">
+        <input type="submit" class="button" value="View">
     </form>
 
     <br>
     {% if viewRequest %}
     {% if viewData %}
     <table>
-        <tr>
-            <th>Ticket</th>
-            <th>Airline</th>
-            <th>Flight</th>
-            <th>Departure Period</th>
-            <th>Departure</th>
-            <th>Arrival Period</th>
-            <th>Arrival</th>
-        </tr>
-        {% for flight in viewData %}
-        <tr>
-            <td>{{flight[0]}}</td>
-            <td>{{flight[1]}}</td>
-            <td>{{flight[2]}}</td>
-            <td>{{flight[3]}}</td>
-            <td>{{flight[4]}}</td>
-            <td>{{flight[5]}}</td>
-            <td>{{flight[6]}}</td>
-            <td>
-                <form action="/cancel" method="POST">
-                    <input type="hidden" name="ticket" value="{{flight[0]}}">
-                    <input type="hidden" name="airline" value="{{flight[1]}}">
-                    <input type="hidden" name="flight" value="{{flight[2]}}">
-                    <input type="hidden" name="departure_period" value="{{flight[3]}}">
-                    <input type="submit" value="Cancel">
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
+        <thead>
+            <tr>
+                <th>Ticket</th>
+                <th>Airline</th>
+                <th>Flight</th>
+                <th>Departure Period</th>
+                <th>Departure</th>
+                <th>Arrival Period</th>
+                <th>Arrival</th>
+                <th>Cancel</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for flight in viewData %}
+            <tr>
+                <td>{{flight[0]}}</td>
+                <td>{{flight[1]}}</td>
+                <td>{{flight[2]}}</td>
+                <td>{{flight[3]}}</td>
+                <td>{{flight[4]}}</td>
+                <td>{{flight[5]}}</td>
+                <td>{{flight[6]}}</td>
+                <td>
+                    <form action="/cancel" method="POST">
+                        <input type="hidden" name="ticket" value="{{flight[0]}}">
+                        <input type="hidden" name="airline" value="{{flight[1]}}">
+                        <input type="hidden" name="flight" value="{{flight[2]}}">
+                        <input type="hidden" name="departure_period" value="{{flight[3]}}">
+                        <input type="submit" id="cancel" value="Cancel">
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
     {% else %}
     <p>No upcoming flights</p>
@@ -81,73 +87,83 @@
         <label for="arrival_date">Arrival date (Round trip only)</label>
         <input type="date" id="arrival_date" name="arrival_date"><br>
 
-        <input type="submit" value="Search">
+        <input type="submit" class="button" value="Search">
     </form>
 
     <br>
     {% if flightRequest %}
     {% if flightData and roundTrip %}
     <table>
-        <tr>
-            <th>Airline (Outgoing)</th>
-            <th>Flight (Outgoing)</th>
-            <th>Departure Period (Outgoing)</th>
-            <th>Departure (Outgoing)</th>
-            <th>Arrival Period (Outgoing)</th>
-            <th>Arrival (Outgoing)</th>
-            <th>Airline (Return)</th>
-            <th>Flight (Return)</th>
-            <th>Departure Period (Return)</th>
-            <th>Departure (Return)</th>
-            <th>Arrival Period (Return)</th>
-            <th>Arrival (Return)</th>
-        </tr>
-        {% for return in roundTrip %}
-        {% for flight in flightData %}
-        <tr>
-            <td>{{flight[0]}}</td>
-            <td>{{flight[1]}}</td>
-            <td>{{flight[2]}}</td>
-            <td>{{flight[3]}}</td>
-            <td>{{flight[4]}}</td>
-            <td>{{flight[5]}}</td>
-            <td>{{return[0]}}</td>
-            <td>{{return[1]}}</td>
-            <td>{{return[2]}}</td>
-            <td>{{return[3]}}</td>
-            <td>{{return[4]}}</td>
-            <td>{{return[5]}}</td>
-            <td><a
-                    href="/purchasePage?airline={{flight[0]}}&flight={{flight[1]}}&departure_period={{flight[2]}}&airline2={{return[0]}}&flight2={{return[1]}}&departure_period2={{return[2]}}">Purchase
-                    a
-                    Ticket</a></td>
-        </tr>
-        {% endfor %}
-        {% endfor %}
+        <thead>
+            <tr>
+                <th>Airline (Outgoing)</th>
+                <th>Flight (Outgoing)</th>
+                <th>Departure Period (Outgoing)</th>
+                <th>Departure (Outgoing)</th>
+                <th>Arrival Period (Outgoing)</th>
+                <th>Arrival (Outgoing)</th>
+                <th>Airline (Return)</th>
+                <th>Flight (Return)</th>
+                <th>Departure Period (Return)</th>
+                <th>Departure (Return)</th>
+                <th>Arrival Period (Return)</th>
+                <th>Arrival (Return)</th>
+                <th>Purchase</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for return in roundTrip %}
+            {% for flight in flightData %}
+            <tr>
+                <td>{{flight[0]}}</td>
+                <td>{{flight[1]}}</td>
+                <td>{{flight[2]}}</td>
+                <td>{{flight[3]}}</td>
+                <td>{{flight[4]}}</td>
+                <td>{{flight[5]}}</td>
+                <td>{{return[0]}}</td>
+                <td>{{return[1]}}</td>
+                <td>{{return[2]}}</td>
+                <td>{{return[3]}}</td>
+                <td>{{return[4]}}</td>
+                <td>{{return[5]}}</td>
+                <td><a
+                        href="/purchasePage?airline={{flight[0]}}&flight={{flight[1]}}&departure_period={{flight[2]}}&airline2={{return[0]}}&flight2={{return[1]}}&departure_period2={{return[2]}}">Purchase
+                        a
+                        Ticket</a></td>
+            </tr>
+            {% endfor %}
+            {% endfor %}
+        </tbody>
     </table>
     {% elif flightData %}
     <table>
-        <tr>
-            <th>Airline</th>
-            <th>Flight</th>
-            <th>Departure Period</th>
-            <th>Departure</th>
-            <th>Arrival Period</th>
-            <th>Arrival</th>
-        </tr>
-        {% for flight in flightData %}
-        <tr>
-            <td>{{flight[0]}}</td>
-            <td>{{flight[1]}}</td>
-            <td>{{flight[2]}}</td>
-            <td>{{flight[3]}}</td>
-            <td>{{flight[4]}}</td>
-            <td>{{flight[5]}}</td>
-            <td><a href="/purchasePage?airline={{flight[0]}}&flight={{flight[1]}}&departure_period={{flight[2]}}">Purchase
-                    a
-                    Ticket</a></td>
-        </tr>
-        {% endfor %}
+        <thead>
+            <tr>
+                <th>Airline</th>
+                <th>Flight</th>
+                <th>Departure Period</th>
+                <th>Departure</th>
+                <th>Arrival Period</th>
+                <th>Arrival</th>
+                <th>Purchase</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for flight in flightData %}
+            <tr>
+                <td>{{flight[0]}}</td>
+                <td>{{flight[1]}}</td>
+                <td>{{flight[2]}}</td>
+                <td>{{flight[3]}}</td>
+                <td>{{flight[4]}}</td>
+                <td>{{flight[5]}}</td>
+                <td><a href="/purchasePage?airline={{flight[0]}}&flight={{flight[1]}}&departure_period={{flight[2]}}">Purchase
+                        a
+                        Ticket</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
     {% else %}
     <p>No flights found</p>
@@ -167,26 +183,29 @@
         <label for="departure_date">Arrival/Departure date: </label>
         <input type="date" id="departure_date" name="departure_date" required><br>
 
-        <input type="submit" value="Find">
+        <input type="submit" class="button" value="Find">
     </form>
 
     <br>
     {% if statusRequest %}
     {% if statusData %}
     <table>
-        <tr>
-            <th>Airline</th>
-            <th>Flight</th>
-            <th>Departure Period</th>
-            <th>Flight Status</th>
-        </tr>
-
-        <tr>
-            <td>{{statusData[0]}}</td>
-            <td>{{statusData[1]}}</td>
-            <td>{{statusData[2]}}</td>
-            <td>{{statusData[8]}}</td>
-        </tr>
+        <thead>
+            <tr>
+                <th>Airline</th>
+                <th>Flight</th>
+                <th>Departure Period</th>
+                <th>Flight Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{statusData[0]}}</td>
+                <td>{{statusData[1]}}</td>
+                <td>{{statusData[2]}}</td>
+                <td>{{statusData[8]}}</td>
+            </tr>
+        </tbody>
     </table>
     {% else %}
     <p>Flight status cannot be found</p>
@@ -196,29 +215,34 @@
 
     <h3>Rate and comment on a past flight</h3>
     <form action="/potReview" method="GET">
-        <input type="submit" value="View">
+        <input type="submit" class="button" value="View">
     </form>
 
     <br>
     {% if reviewRequest %}
     {% if reviewData %}
     <table>
-        <tr>
-            <th>Airline</th>
-            <th>Flight</th>
-            <th>Departure Period</th>
-        </tr>
-        {% for flight in reviewData %}
-        <tr>
-            <td>{{flight[0]}}</td>
-            <td>{{flight[1]}}</td>
-            <td>{{flight[2]}}</td>
-            <td>
-                <a
-                    href="/reviewPage?airline={{flight[0]}}&flight={{flight[1]}}&departure_period={{flight[2]}}">Review</a>
-            </td>
-        </tr>
-        {% endfor %}
+        <thead>
+            <tr>
+                <th>Airline</th>
+                <th>Flight</th>
+                <th>Departure Period</th>
+                <th>Review</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for flight in reviewData %}
+            <tr>
+                <td>{{flight[0]}}</td>
+                <td>{{flight[1]}}</td>
+                <td>{{flight[2]}}</td>
+                <td>
+                    <a
+                        href="/reviewPage?airline={{flight[0]}}&flight={{flight[1]}}&departure_period={{flight[2]}}">Review</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
     {% else %}
     <p>No past flights to review</p>
@@ -238,7 +262,7 @@
         <label for="end">Ending Range (Optional): </label>
         <input type="date" id="end" name="end"><br>
 
-        <input type="submit" value="Track">
+        <input type="submit" class="button" value="Track">
     </form>
 
     <br>
@@ -246,16 +270,20 @@
     {% if monthlyData %}
     <p>Total amount spent from {{start}} to {{end}}: ${{total[0]}}</p>
     <table>
-        <tr>
-            <th>Month</th>
-            <th>Total</th>
-        </tr>
-        {% for info in monthlyData %}
-        <tr>
-            <td>{{info[0]}}</td>
-            <td>{{info[1]}}</td>
-        </tr>
-        {% endfor %}
+        <thead>
+            <tr>
+                <th>Month</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for info in monthlyData %}
+            <tr>
+                <td>{{info[0]}}</td>
+                <td>{{info[1]}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
     {% else %}
     <p>Total amount spent: $0</p>
@@ -268,7 +296,7 @@
         <label for="phone">Phone Number: </label>
         <input type="text" id="phone" name="phone" required> <br>
 
-        <input type="submit" value="Add">
+        <input type="submit" class="button" value="Add">
     </form>
 
     <br>

@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title>Air Ticket Reservation System</title>
+    <link rel="stylesheet" href="static/views.css">
 </head>
 
 <body>
@@ -24,66 +25,74 @@
         <label for="arrival_date">Arrival date (Round trip only)</label>
         <input type="date" id="arrival_date" name="arrival_date"><br>
 
-        <input type="submit" value="Search">
+        <input type="submit" class="button" value="Search">
     </form>
 
     <br>
     {% if flightRequest %}
     {% if flightData and roundTrip %}
     <table>
-        <tr>
-            <th>Airline (Outgoing)</th>
-            <th>Flight (Outgoing)</th>
-            <th>Departure Period (Outgoing)</th>
-            <th>Departure (Outgoing)</th>
-            <th>Arrival Period (Outgoing)</th>
-            <th>Arrival (Outgoing)</th>
-            <th>Airline (Return)</th>
-            <th>Flight (Return)</th>
-            <th>Departure Period (Return)</th>
-            <th>Departure (Return)</th>
-            <th>Arrival Period (Return)</th>
-            <th>Arrival (Return)</th>
-        </tr>
-        {% for return in roundTrip %}
-        {% for flight in flightData %}
-        <tr>
-            <td>{{flight[0]}}</td>
-            <td>{{flight[1]}}</td>
-            <td>{{flight[2]}}</td>
-            <td>{{flight[3]}}</td>
-            <td>{{flight[4]}}</td>
-            <td>{{flight[5]}}</td>
-            <td>{{return[0]}}</td>
-            <td>{{return[1]}}</td>
-            <td>{{return[2]}}</td>
-            <td>{{return[3]}}</td>
-            <td>{{return[4]}}</td>
-            <td>{{return[5]}}</td>
-        </tr>
-        {% endfor %}
-        {% endfor %}
+        <thead>
+            <tr>
+                <th>Airline (Outgoing)</th>
+                <th>Flight (Outgoing)</th>
+                <th>Departure Period (Outgoing)</th>
+                <th>Departure (Outgoing)</th>
+                <th>Arrival Period (Outgoing)</th>
+                <th>Arrival (Outgoing)</th>
+                <th>Airline (Return)</th>
+                <th>Flight (Return)</th>
+                <th>Departure Period (Return)</th>
+                <th>Departure (Return)</th>
+                <th>Arrival Period (Return)</th>
+                <th>Arrival (Return)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for return in roundTrip %}
+            {% for flight in flightData %}
+            <tr>
+                <td>{{flight[0]}}</td>
+                <td>{{flight[1]}}</td>
+                <td>{{flight[2]}}</td>
+                <td>{{flight[3]}}</td>
+                <td>{{flight[4]}}</td>
+                <td>{{flight[5]}}</td>
+                <td>{{return[0]}}</td>
+                <td>{{return[1]}}</td>
+                <td>{{return[2]}}</td>
+                <td>{{return[3]}}</td>
+                <td>{{return[4]}}</td>
+                <td>{{return[5]}}</td>
+            </tr>
+            {% endfor %}
+            {% endfor %}
+        </tbody>
     </table>
     {% elif flightData %}
     <table>
-        <tr>
-            <th>Airline</th>
-            <th>Flight</th>
-            <th>Departure Period</th>
-            <th>Departure</th>
-            <th>Arrival Period</th>
-            <th>Arrival</th>
-        </tr>
-        {% for flight in flightData %}
-        <tr>
-            <td>{{flight[0]}}</td>
-            <td>{{flight[1]}}</td>
-            <td>{{flight[2]}}</td>
-            <td>{{flight[3]}}</td>
-            <td>{{flight[4]}}</td>
-            <td>{{flight[5]}}</td>
-        </tr>
-        {% endfor %}
+        <thead>
+            <tr>
+                <th>Airline</th>
+                <th>Flight</th>
+                <th>Departure Period</th>
+                <th>Departure</th>
+                <th>Arrival Period</th>
+                <th>Arrival</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for flight in flightData %}
+            <tr>
+                <td>{{flight[0]}}</td>
+                <td>{{flight[1]}}</td>
+                <td>{{flight[2]}}</td>
+                <td>{{flight[3]}}</td>
+                <td>{{flight[4]}}</td>
+                <td>{{flight[5]}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
     {% else %}
     <p>No flights found</p>
@@ -102,26 +111,29 @@
         <label for="departure_date">Departure date: </label>
         <input type="date" id="departure_date" name="departure_date" required><br>
 
-        <input type="submit" value="Find">
+        <input type="submit" class="button" value="Find">
     </form>
 
     <br>
     {% if statusRequest %}
     {% if statusData %}
     <table>
-        <tr>
-            <th>Airline</th>
-            <th>Flight</th>
-            <th>Departure Period</th>
-            <th>Flight Status</th>
-        </tr>
-
-        <tr>
-            <td>{{statusData[0]}}</td>
-            <td>{{statusData[1]}}</td>
-            <td>{{statusData[2]}}</td>
-            <td>{{statusData[8]}}</td>
-        </tr>
+        <thead>
+            <tr>
+                <th>Airline</th>
+                <th>Flight</th>
+                <th>Departure Period</th>
+                <th>Flight Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{statusData[0]}}</td>
+                <td>{{statusData[1]}}</td>
+                <td>{{statusData[2]}}</td>
+                <td>{{statusData[8]}}</td>
+            </tr>
+        <tbody>
     </table>
     {% else %}
     <p>Flight status cannot be found</p>

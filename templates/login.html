@@ -5,19 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <style>
-        form {
-            text-align: center;
-            margin-top: 20vh;
-            /* Optional: Adjust margin for vertical centering */
-        }
-    </style>
+    <link rel="stylesheet" href="static/auth.css">
 </head>
 
 <body>
     <form action="/loginAuth" method="POST">
         {% if error %}
-        <p> {{error}} </p>
+        <p class="error"> {{error}} </p>
         {% endif %}
         <h1>Login</h1>
         <label for="username">Username: </label>
@@ -32,7 +26,7 @@
             <option value="staff">Staff</option>
         </select> <br>
 
-        <input type="submit" value="Login">
+        <input type="submit" class="button" value="Login">
     </form>
     <a href="/">Go Back</a>
 </body>

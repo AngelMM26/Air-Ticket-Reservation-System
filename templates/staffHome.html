@@ -5,19 +5,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Staff Home</title>
+    <link rel="stylesheet" href="static/views.css">
 </head>
 
 <body>
     <h1>Welcome, {{fname}}!</h1>
 
     {% if maintenanceError %}
-    <p>{{maintenanceError}}</p>
+    <p class="error">{{maintenanceError}}</p>
     {% endif %}
     {% if mainMessage %}
     <p>{{mainMessage}}</p>
     {% endif %}
     {% if customerFlightError %}
-    <p>{{customerFlightError}}</p>
+    <p class="error">{{customerFlightError}}</p>
     {% endif %}
     {% if messageFrequent %}
     <p>{{messageFrequent}}</p>
@@ -34,23 +35,27 @@
         <label for="end">Ending Range (Optional): </label>
         <input type="date" id="end" name="end"><br>
 
-        <input type="submit" value="View">
+        <input type="submit" class="button" value="View">
     </form>
 
     <br>
     {% if flightRequest %}
     {% if flightData %}
     <table>
-        <tr>
-            <th>Flight</th>
-        </tr>
-        {% for flight in flightData %}
-        <tr>
-            <td>{{flight[0]}}</td>
-            <td><a href="/flightCustomers?flight={{flight[0]}}&departure_period={{flight[1]}}">View
-                    customers in flight</a></td>
-        </tr>
-        {% endfor %}
+        <thead>
+            <tr>
+                <th>Flight</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for flight in flightData %}
+            <tr>
+                <td>{{flight[0]}}</td>
+                <td><a href="/flightCustomers?flight={{flight[0]}}&departure_period={{flight[1]}}">View
+                        customers in flight</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
     {% else %}
     <p>No flights found</p>
@@ -60,18 +65,22 @@
     {% if customerData %}
     <p>Airline: {{airline}}, Flight: {{flight}}, Departure Period: {{deptDate}}</p>
     <table>
-        <tr>
-            <th>Email</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-        </tr>
-        {% for customer in customerData %}
-        <tr>
-            <td>{{customer[0]}}</td>
-            <td>{{customer[1]}}</td>
-            <td>{{customer[2]}}</td>
-        </tr>
-        {% endfor %}
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for customer in customerData %}
+            <tr>
+                <td>{{customer[0]}}</td>
+                <td>{{customer[1]}}</td>
+                <td>{{customer[2]}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
     {% endif %}
     <br><br>
@@ -106,13 +115,13 @@
             <option value="canceled">Canceled</option>
         </select><br>
 
-        <input type="submit" value="Create">
+        <input type="submit" class="button" value="Create">
     </form>
 
     <br>
 
     {% if flightError %}
-    <p>{{flightError}}</p>
+    <p class="error">{{flightError}}</p>
     {% endif %}
     {% if flightMessage %}
     <p>{{flightMessage}}</p>
@@ -134,7 +143,7 @@
             <option value="canceled">Canceled</option>
         </select><br>
 
-        <input type="submit" value="Change">
+        <input type="submit" class="button" value="Change">
     </form>
     <br><br><br>
 
@@ -149,26 +158,29 @@
         <label for="departure_date">Departure date: </label>
         <input type="date" id="departure_date" name="departure_date" required><br>
 
-        <input type="submit" value="Find">
+        <input type="submit" class="button" value="Find">
     </form>
 
     <br>
     {% if statusRequest %}
     {% if statusData %}
     <table>
-        <tr>
-            <th>Airline</th>
-            <th>Flight</th>
-            <th>Departure Period</th>
-            <th>Flight Status</th>
-        </tr>
-
-        <tr>
-            <td>{{statusData[0]}}</td>
-            <td>{{statusData[1]}}</td>
-            <td>{{statusData[2]}}</td>
-            <td>{{statusData[8]}}</td>
-        </tr>
+        <thead>
+            <tr>
+                <th>Airline</th>
+                <th>Flight</th>
+                <th>Departure Period</th>
+                <th>Flight Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{statusData[0]}}</td>
+                <td>{{statusData[1]}}</td>
+                <td>{{statusData[2]}}</td>
+                <td>{{statusData[8]}}</td>
+            </tr>
+        </tbody>
     </table>
     {% else %}
     <p>Flight status cannot be found</p>
@@ -193,12 +205,12 @@
         <label for="manDate">Manufacturing Date: </label>
         <input type="date" id="manDate" name="manDate" required><br>
 
-        <input type="submit" value="Add">
+        <input type="submit" class="button" value="Add">
     </form>
     <br>
 
     {% if airplaneError %}
-    <p>{{airplaneError}}</p>
+    <p class="error">{{airplaneError}}</p>
     {% endif %}
     {% if airplaneMessage %}
     <p>{{airplaneMessage}}</p>
@@ -229,12 +241,12 @@
             <option value="Both">Both</option>
         </select><br>
 
-        <input type="submit" value="Add">
+        <input type="submit" class="button" value="Add">
     </form>
 
     <br>
     {% if airportError %}
-    <p>{{airportError}}</p>
+    <p class="error">{{airportError}}</p>
     {% endif %}
     {% if airportMessage %}
     <p>{{airportMessage}}</p>
@@ -249,7 +261,7 @@
         <label for="departure_date">Departure date: </label>
         <input type="datetime-local" id="departure_date" name="departure_date" required><br>
 
-        <input type="submit" value="View">
+        <input type="submit" class="button" value="View">
     </form>
 
     <br>
@@ -258,22 +270,26 @@
     {% if avgRating %}
     <p>Average Rating: {{avgRating[0]}}</p>
     <table>
-        <tr>
-            <th>Email</th>
-            <th>First name</th>
-            <th>Last name</th>
-            <th>Rating</th>
-            <th>Comment</th>
-        </tr>
-        {% for review in reviews %}
-        <tr>
-            <td>{{review[0]}}</td>
-            <td>{{review[1]}}</td>
-            <td>{{review[2]}}</td>
-            <td>{{review[3]}}</td>
-            <td>{{review[4]}}</td>
-        </tr>
-        {% endfor %}
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>First name</th>
+                <th>Last name</th>
+                <th>Rating</th>
+                <th>Comment</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for review in reviews %}
+            <tr>
+                <td>{{review[0]}}</td>
+                <td>{{review[1]}}</td>
+                <td>{{review[2]}}</td>
+                <td>{{review[3]}}</td>
+                <td>{{review[4]}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
     {% else %}
     <p>No reviews available for this flight</p>
@@ -295,7 +311,7 @@
         <label for="end">Maintenance end: </label>
         <input type="datetime-local" id="end" name="end" required><br>
 
-        <input type="submit" value="Schedule">
+        <input type="submit" class="button" value="Schedule">
     </form>
 
     <br>
@@ -303,7 +319,7 @@
 
     <h3>View most frequent customer</h3>
     <form action="/frequentCustomer" method="GET">
-        <input type="submit" value="View">
+        <input type="submit" class="button" value="View">
     </form>
 
     <br>
@@ -317,23 +333,27 @@
     <form action="/viewCustomerFlights" method="GET">
         <label for="customer">Customer email: </label>
         <input type="text" id="customer" name="customer"> <br>
-        <input type="submit" value="View">
+        <input type="submit" class="button" value="View">
     </form>
     <br>
 
     {% if customerFlights %}
     <p>Customer: {{customer}}</p>
     <table>
-        <tr>
-            <th>Flight</th>
-            <th>Departure Period</th>
-        </tr>
-        {% for flight in customerFlights %}
-        <tr>
-            <td>{{flight[0]}}</td>
-            <td>{{flight[1]}}</td>
-        </tr>
-        {% endfor %}
+        <thead>
+            <tr>
+                <th>Flight</th>
+                <th>Departure Period</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for flight in customerFlights %}
+            <tr>
+                <td>{{flight[0]}}</td>
+                <td>{{flight[1]}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
     {% endif %}
     <br><br>
@@ -341,7 +361,7 @@
 
     <h3>View earned revenue</h3>
     <form action="/viewRevenue" method="GET">
-        <input type="submit" value="View">
+        <input type="submit" class="button" value="View">
     </form>
 
     <br>
@@ -364,7 +384,7 @@
         <label for="phone">Phone Number: </label>
         <input type="text" id="phone" name="phone" required> <br>
 
-        <input type="submit" value="Add">
+        <input type="submit" class="button" value="Add">
     </form>
 
     <br><br><br>
@@ -374,7 +394,7 @@
         <label for="email">Email: </label>
         <input type="text" id="email" name="email" required> <br>
 
-        <input type="submit" value="Add">
+        <input type="submit" class="button" value="Add">
     </form>
 
     <br><br><br>
