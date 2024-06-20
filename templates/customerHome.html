@@ -301,7 +301,10 @@
 
     <br>
     {% if addRequest %}
-    <p>Successfully added information</p>
+    <p>{{addRequest}}</p>
+    {% endif %}
+    {% if addRequestError %}
+    <p>{{addRequestError}}</p>
     {% endif %}
     <br><br>
 

@@ -41,3 +41,32 @@ def staffOnly(route):
             return redirect(url_for('views.customerHome'))
         return route(*args, **kwargs)
     return wrapper
+
+def insertPhone(role, username, phone):
+    cursor = db.cursor()
+    if(role == "customer"):
+        query = "INSERT INTO customer_phone VALUES (%s, %s)"
+    else:
+        query = "INSERT INTO staff_phone VALUES (%s, %s)"
+    try:
+        cursor.execute(query, (username, phone))
+        db.commit()
+        cursor.close()
+        return 1
+    except:
+        cursor.close()
+        return 0
+    
+def insertEmail(username, email):
+    cursor = db.cursor()
+    query = "INSERT INTO staff_email VALUES (%s, %s)"
+    try:
+        cursor.execute(query, (username, email))
+        db.commit()
+        cursor.close()
+        return 1
+    except:
+        cursor.close()
+        return 0
+        
+        

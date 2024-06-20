@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, session, url_for, redirect
-from utils import db, loginRequired, loginSatisfied, customerOnly, staffOnly
+from utils import db, loginRequired, loginSatisfied, customerOnly, staffOnly, insertPhone, insertEmail
 from datetime import datetime, timedelta
 import hashlib
 from decimal import Decimal
@@ -488,8 +488,7 @@ def addPlane():
     cursor.execute(check, (session.get("airline"), airplaneID))
     airplaneExists = cursor.fetchone()
     if(airplaneExists):
-        airplaneExists = cursor.fetchone()[1]
-        error = f"Error: AirplaneID {airplaneExists} already exists"
+        error = f"Error: AirplaneID {airplaneExists[1]} already exists"
         return render_template('staffHome.html', fname=session["fname"], airplaneError=error)
     numSeats = request.form.get("numSeats")
     manufacturer = request.form.get("man")
@@ -619,32 +618,32 @@ def viewRevenue():
 @views.route("/addPhone", methods=["POST"])
 @loginRequired
 def addPhone():
+    role = session.get("role")
+    username = session.get("username")
     phone = request.form.get("phone")
-    cursor = db.cursor()
-    if(session.get("role") == "customer"):
-        query = "INSERT INTO customer_phone VALUES (%s, %s)"
-        cursor.execute(query, (session.get("username"), phone))
-        db.commit()
-        cursor.close()
-        return render_template('customerHome.html', fname=session["fname"], addRequest=True)
+    commited = insertPhone(role, username, phone)
+    if(role == "customer"):
+        if(commited):
+            return render_template('customerHome.html', fname=session["fname"], addRequest=f"Successfully added {phone} as a contact")
+        else:
+            return render_template('customerHome.html', fname=session["fname"], addRequestError=f"{phone} is already registered as a contact")
     else:
-        query = "INSERT INTO staff_phone VALUES (%s, %s)"
-        cursor.execute(query, (session.get("username"), phone))
-        db.commit()
-        cursor.close()
-        return render_template('staffHome.html', fname=session["fname"], addContactRequest=f"Successfully added {phone} as a contact")
+        if(commited):
+            return render_template('staffHome.html', fname=session["fname"], addContactRequest=f"Successfully added {phone} as a contact")
+        else:
+            return render_template('staffHome.html', fname=session["fname"], addContactError=f"{phone} is already registered as a contact")
     
 @views.route("/addEmail", methods=["POST"])
 @loginRequired
 @staffOnly
 def addEmail():
+    username = session.get("username")
     email = request.form.get("email")
-    cursor = db.cursor()
-    query = "INSERT INTO staff_email VALUES (%s, %s)"
-    cursor.execute(query, (session.get("username"), email))
-    db.commit()
-    cursor.close()
-    return render_template('staffHome.html', fname=session["fname"], addContactRequest=f"Successfully added {email} as a contact")
+    commited = insertEmail(username, email)
+    if(commited):
+        return render_template('staffHome.html', fname=session["fname"], addContactRequest=f"Successfully added {email} as a contact")
+    else:
+        return render_template('staffHome.html', fname=session["fname"], addContactError=f"{email} is already registered as a contact")
    
 
     

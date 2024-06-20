@@ -26,6 +26,9 @@
     {% if addContactRequest %}
     <p>{{addContactRequest}}</p>
     {% endif %}
+    {% if addContactError %}
+    <p>{{addContactError}}</p>
+    {% endif %}
 
     <h3>View airline flights</h3>
     <form action="/airlineFlights" method="GET">
@@ -389,7 +392,7 @@
 
     <br><br><br>
 
-    <h3>Add Email</h3>
+    <h3>Add email</h3>
     <form action="/addEmail" method="POST">
         <label for="email">Email: </label>
         <input type="text" id="email" name="email" required> <br>
