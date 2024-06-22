@@ -14,11 +14,12 @@
     {% if purchase %}
     <p>{{purchase}}</p>
     {% endif %}
-
     {% if cancel %}
     <p>{{cancel}}</p>
     {% endif %}
-
+    {% if cancelError %}
+    <p class="error">{{cancelError}}</p>
+    {% endif %}
     {% if review %}
     <p>{{review}}</p>
     {% endif %}
@@ -171,7 +172,6 @@
     {% endif %}
     <br><br>
 
-    <br><br>
     <h3>Get flight status</h3>
     <form action="/flightStatus" method="GET">
         <label for="airline">Airline name: </label>

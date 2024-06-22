@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, session, url_for, redirect
-from utils import db, loginRequired, loginSatisfied, customerOnly, staffOnly, insertPhone, insertEmail
+from utils import db, loginRequired, loginSatisfied, customerOnly, staffOnly, insertPhone, insertEmail, updatePrice, insertTicket
 from datetime import datetime, timedelta
 import hashlib
 from decimal import Decimal
@@ -245,35 +245,13 @@ def purchase():
     query = """INSERT INTO purchase(ticket_id, email, card_type, card_num, card_name, expiration, fname, lname, DOB) 
             VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)"""
     cursor.execute(query, (ticket, session.get("username"), cardType, cardNum, cardName, exp, fname, lname, dob))
-    query2 = """SELECT COUNT(ticket_id) FROM ticket WHERE airline_name = %s AND flight_num = %s AND departure_period = %s AND 
-            ticket_id NOT IN (SELECT ticket_id FROM purchase)"""
-    cursor.execute(query2, (airline, flight, deptDate))
-    ticketLeft = cursor.fetchone()[0]
-    query3 = """SELECT base_price, COUNT(ticket_id) FROM flight NATURAL JOIN ticket WHERE airline_name = %s AND flight_num = %s AND departure_period = %s"""
-    cursor.execute(query3, (airline, flight, deptDate))
-    info = cursor.fetchone()
-    base = info[0]
-    totalTickets = info[1]
-    if(0.2*(totalTickets) >= ticketLeft):
-        newPrice = (base*Decimal(0.25)) + base
-        query4 = """UPDATE ticket SET calculated_price = %s WHERE airline_name = %s AND flight_num = %s AND departure_period = %s AND 
-                 ticket_id NOT IN (SELECT ticket_id FROM purchase)"""
-        cursor.execute(query4, (newPrice, airline, flight, deptDate))
+    updatePrice(cursor, airline, flight, deptDate)
     if(ticket2):
         cursor.execute(query, (ticket2, session.get("username"), cardType, cardNum, cardName, exp, fname, lname, dob))
-        cursor.execute(query2, (airline2, flight2, deptDate2))
-        ticketLeft = cursor.fetchone()[0]
-        cursor.execute(query3, (airline2, flight2, deptDate2))
-        info = cursor.fetchone()
-        base = info[0]
-        totalTickets = info[1]
-        if(0.2*(totalTickets) >= ticketLeft):
-            newPrice = (base*Decimal(0.25)) + base
-            cursor.execute(query4, (newPrice, airline2, flight2, deptDate2))
+        updatePrice(cursor, airline, flight, deptDate)
     db.commit()
     cursor.close()
-    purchase="Purchase complete."
-    return render_template('customerHome.html', fname=session["fname"], purchase=purchase)
+    return render_template('customerHome.html', fname=session["fname"], purchase="Purchase complete")
     
 @views.route("/cancel", methods=["POST"])
 @loginRequired
@@ -289,24 +267,11 @@ def cancel():
         flight = request.form.get("flight")
         cursor = db.cursor()
         cursor.execute(query, (ticket,))
-        query2 = """SELECT COUNT(ticket_id) FROM ticket WHERE airline_name = %s AND flight_num = %s AND departure_period = %s AND 
-                 ticket_id NOT IN (SELECT ticket_id FROM purchase)"""
-        cursor.execute(query2, (airline, flight, deptDate))
-        ticketLeft = cursor.fetchone()[0]
-        query3 = """SELECT base_price, COUNT(ticket_id) FROM flight NATURAL JOIN ticket WHERE airline_name = %s AND flight_num = %s AND departure_period = %s"""
-        cursor.execute(query3, (airline, flight, deptDate))
-        info = cursor.fetchone()
-        base = info[0]
-        totalTickets = info[1]
-        if(0.2*(totalTickets) < ticketLeft):
-            query4 = """UPDATE ticket SET calculated_price = %s WHERE airline_name = %s AND flight_num = %s AND departure_period = %s AND 
-                    ticket_id NOT IN (SELECT ticket_id FROM purchase)"""
-            cursor.execute(query4, (base, airline, flight, deptDate))
+        updatePrice(cursor, airline, flight, deptDate)
         db.commit()
         cursor.close()
-        return render_template('customerHome.html', fname=session["fname"])
-    cancel = "Flight cancellations are not permitted within 24 hours of departure."
-    return render_template('customerHome.html', fname=session["fname"], cancel=cancel)
+        return render_template('customerHome.html', fname=session["fname"], cancel=f"Successfully cancelled ticket {ticket} for {airline} flight {flight} departing on {deptDate}")
+    return render_template('customerHome.html', fname=session["fname"], cancelError="Flight cancellations are not permitted within 24 hours of departure")
 
 @views.route("/potReview", methods=["GET"])
 @loginRequired
@@ -406,7 +371,7 @@ def flightCustomers():
     cursor.execute(query, (session.get("airline"), flight, deptDate))
     customerData = cursor.fetchall()
     cursor.close()
-    return render_template('staffHome.html', fname=session["fname"], customerData=customerData, airline=session.get("airline"), flight=flight, deptDate=deptDate)
+    return render_template('staffHome.html', fname=session["fname"], customerDataReq=True, customerData=customerData, airline=session.get("airline"), flight=flight, deptDate=deptDate)
 
 @views.route("/changeStatus", methods=["POST"])
 @loginRequired
@@ -433,7 +398,7 @@ def createFlight():
     query = "INSERT INTO flight VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s);"
     cursor.execute(check, (src,))
     data = cursor.fetchone()
-    error = "Error: Enter a valid code"
+    error = "Enter a valid code"
     if(data):
         srcType = data[0]
         srcCountry = data[1]
@@ -475,8 +440,7 @@ def createFlight():
         cursor.execute(query, (session.get("airline"), flight, deptDate, src, arrivalDate, dst, price, airplaneID, status))
         db.commit()
         cursor.close()
-        message = "Successfully created flight"
-        return render_template('staffHome.html', fname=session["fname"], flightMessage=message)
+        return render_template('staffHome.html', fname=session["fname"], flightMessage="Successfully created flight")
 
 @views.route("/addPlane", methods=["POST"])
 @loginRequired
@@ -548,24 +512,28 @@ def viewReviews():
 @loginRequired
 @staffOnly
 def maintenance():
-    mainID = request.form.get("mainID")
-    check = "SELECT * FROM maintenance WHERE maintenance_id = %s"
     cursor = db.cursor()
-    cursor.execute(check, (mainID,))
-    idExists = cursor.fetchone()
-    if(idExists):
-        cursor.close()
-        error = "Error: MaintenanceID already exists, try a different one"
-        return render_template('staffHome.html', fname=session["fname"], maintenanceError=error)
     airplaneID = request.form.get("airplaneID")
     start = request.form.get("start")
     end = request.form.get("end")
-    query = "INSERT INTO maintenance VALUES (%s, %s, %s, %s, %s)"
-    cursor.execute(query, (mainID, start, end, session.get("airline"), airplaneID))
-    db.commit()
-    cursor.close()
-    message = f"Successully scheduled maintenance for Airplane {airplaneID}"
-    return render_template('staffHome.html', fname=session["fname"], mainMessage=message)
+    check = "SELECT * FROM airplane WHERE airline_name = %s AND airplane_id = %s"
+    cursor.execute(check, (session.get("airline"), airplaneID))
+    exists = cursor.fetchone()
+    if(exists):
+        check2 = """SELECT * FROM flight WHERE airline_name = %s AND airplane_id = %s AND ((%s BETWEEN departure_period AND arrival_period) OR (%s BETWEEN departure_period 
+                AND arrival_period) OR (departure_period >= %s AND arrival_period <= %s));"""
+        cursor.execute(check2, (session.get("airline"), airplaneID, start, end, start, end))
+        flightScheduled = cursor.fetchall()
+        if(flightScheduled):
+            cursor.close()
+            return render_template('staffHome.html', fname=session["fname"], mainError=f"Could not schedule maintenance for airplane {airplaneID}: {start} - {end}")
+        query = "INSERT INTO maintenance VALUES (%s, %s, %s, %s)"
+        cursor.execute(query, (start, end, session.get("airline"), airplaneID))
+        db.commit()
+        cursor.close()
+        return render_template('staffHome.html', fname=session["fname"], mainMessage=f"Successully scheduled maintenance for {session.get('airline')} airplane {airplaneID}: {start} - {end}")
+    else:
+        return render_template('staffHome.html', fname=session["fname"], mainError=f"Could not schedule maintenance for {session.get('airline')} airplane {airplaneID}: airplaneID does not exist")
 
 @views.route("/frequentCustomer", methods=["GET"])
 @loginRequired
@@ -595,7 +563,7 @@ def viewCustomerFlights():
     cursor.close()
     if(customerFlights):
         return render_template('staffHome.html', fname=session["fname"], customerFlights=customerFlights, customer=customer)
-    customerFlightError = f"Error: Customer with email: {customer} does not exist or been on any flights"
+    customerFlightError = f"Customer with email: {customer} does not exist or been on any flights"
     return render_template('staffHome.html', fname=session["fname"], customerFlightError=customerFlightError)
 
 @views.route("/viewRevenue", methods=["GET"])
@@ -612,8 +580,45 @@ def viewRevenue():
     cursor.execute(query, (session.get("airline"), yearAgo, currDate))
     yearTotal = cursor.fetchone()
     cursor.close()
-    print(monthTotal, yearTotal)
     return render_template('staffHome.html', fname=session["fname"], revenueRequest=True, monthTotal=monthTotal, yearTotal=yearTotal)
+
+@views.route("/addTicket", methods=["POST"])
+@loginRequired
+@staffOnly
+def addTicket():
+    flightNum = request.form.get("flight")
+    deptDate = request.form.get("departure_period")
+    ticket = request.form.get("ticketID")
+    cursor = db.cursor()
+    query = "SELECT * FROM flight WHERE airline_name = %s AND flight_num = %s AND DATE(departure_period) = %s AND TIME(departure_period) LIKE %s"
+    cursor.execute(query, (session.get("airline"), flightNum, deptDate[0:10], deptDate[11:] + "%"))
+    flightInfo = cursor.fetchone()
+    if(flightInfo):
+        deptDate = flightInfo[2]
+        airplaneID = flightInfo[7]
+        query2 = "SELECT num_of_seats FROM airplane WHERE airline_name = %s AND airplane_id = %s"
+        cursor.execute(query2, (session.get("airline"), airplaneID))
+        totalSeats = cursor.fetchone()
+        query3 = "SELECT COUNT(*) FROM ticket WHERE airline_name = %s AND flight_num = %s AND departure_period = %s"
+        cursor.execute(query3, (session.get("airline"), flightNum, deptDate))
+        totalTickets = cursor.fetchone()
+        cursor.close()
+        if(int(totalTickets[0]) < int(totalSeats[0])):
+            price = flightInfo[6]
+            commited =  insertTicket(ticket, price, session.get("airline"), flightNum, deptDate)
+            if(commited):
+                cursor = db.cursor()
+                updatePrice (cursor, session.get("airline"), flightNum, deptDate)
+                db.commit()
+                cursor.close()
+                return render_template('staffHome.html', fname=session["fname"], addTicket=f"Successfully created ticket for {session.get('airline')} flight {flightNum} departing on {deptDate}")
+            else:
+                return render_template('staffHome.html', fname=session["fname"], addTicketError=f"Could not create a ticket for {session.get('airline')} flight {flightNum} departing on {deptDate}: Ticket ID {ticket} already exists")
+        else:
+            return render_template('staffHome.html', fname=session["fname"], addTicketError=f"Could not create a ticket for {session.get('airline')} flight {flightNum} departing on {deptDate}: Max seating capacity reached")
+    else:
+        return render_template('staffHome.html', fname=session["fname"], addTicketError=f"Could not create a ticket for {session.get('airline')} flight {flightNum} departing on {deptDate}: Flight doesn't exist") 
+
 
 @views.route("/addPhone", methods=["POST"])
 @loginRequired

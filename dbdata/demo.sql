@@ -1,7 +1,7 @@
 INSERT INTO airline VALUES("United");
 
 INSERT INTO airplane VALUES("United", 1, 4, "Boeing", "B-101", "2013-05-02");
-INSERT INTO airplane VALUES("United", 2, 4, "Airbus", "A-101", "2011-05-02");
+INSERT INTO airplane VALUES("United", 2, 25, "Airbus", "A-101", "2011-05-02");
 INSERT INTO airplane VALUES("United", 3, 50, "Boeing", "B-101", "2015-05-02");
 
 INSERT INTO maintenance VALUES("2024-06-27 13:25:25", "2024-06-29 07:25:25", "United", 1 );

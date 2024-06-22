@@ -17,6 +17,9 @@
     {% if mainMessage %}
     <p>{{mainMessage}}</p>
     {% endif %}
+    {% if mainError %}
+    <p class="error">{{mainError}}</p>
+    {% endif %}
     {% if customerFlightError %}
     <p class="error">{{customerFlightError}}</p>
     {% endif %}
@@ -28,6 +31,12 @@
     {% endif %}
     {% if addContactError %}
     <p>{{addContactError}}</p>
+    {% endif %}
+    {% if addTicket %}
+    <p>{{addTicket}}</p>
+    {% endif %}
+    {% if addTicketError %}
+    <p class="error">{{addTicketError}}</p>
     {% endif %}
 
     <h3>View airline flights</h3>
@@ -48,6 +57,7 @@
         <thead>
             <tr>
                 <th>Flight</th>
+                <th>View</th>
             </tr>
         </thead>
         <tbody>
@@ -65,6 +75,7 @@
     {% endif %}
     {% endif %}
 
+    {% if customerDataReq %}
     {% if customerData %}
     <p>Airline: {{airline}}, Flight: {{flight}}, Departure Period: {{deptDate}}</p>
     <table>
@@ -85,6 +96,9 @@
             {% endfor %}
         </tbody>
     </table>
+    {% else %}
+    <p>No customers for {{airline}} flight {{flight}} departing on {{deptDate}}</p>
+    {% endif %}
     {% endif %}
     <br><br>
 
@@ -111,7 +125,7 @@
         <label for="airplaneID">Airplane ID: </label>
         <input type="number" id="airplaneID" name="airplaneID" required> <br>
 
-        <label for="status">Change Status to: </label>
+        <label for="status">Status: </label>
         <select id="status" name="status">
             <option value="on-time">On-time</option>
             <option value="delayed">Delayed</option>
@@ -302,9 +316,6 @@
 
     <h3>Schedule maintenance</h3>
     <form action="/maintenance" method="POST">
-        <label for="mainID">MaintenanceID: </label>
-        <input type="number" id="mainID" name="mainID" required><br>
-
         <label for="airplaneID">AirplaneID: </label>
         <input type="text" id="airplaneID" name="airplaneID" required><br>
 
@@ -314,7 +325,7 @@
         <label for="end">Maintenance end: </label>
         <input type="datetime-local" id="end" name="end" required><br>
 
-        <input type="submit" class="button" value="Schedule">
+        <input type="submit" class="long_button" value="Schedule">
     </form>
 
     <br>
@@ -381,6 +392,22 @@
     {% endif %}
     {% endif %}
     <br><br>
+
+    <h3>Create a ticket for a flight</h3>
+    <form action="/addTicket" method="POST">
+        <label for="flight">Flight: </label>
+        <input type="text" id="flight" name="flight" required> <br>
+
+        <label for="departure_period">Departure: </label>
+        <input type="datetime-local" id="departure_period" name="departure_period" required> <br>
+
+        <label for="ticketID">Ticket ID: </label>
+        <input type="text" id="ticketID" name="ticketID" required> <br>
+
+        <input type="submit" class="button" value="Create">
+    </form>
+
+    <br><br><br>
 
     <h3>Add phonenumber</h3>
     <form action="/addPhone" method="POST">
