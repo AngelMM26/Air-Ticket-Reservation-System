@@ -135,8 +135,7 @@
 
     {% if flightError %}
     <p class="error">{{flightError}}</p>
-    {% endif %}
-    {% if flightMessage %}
+    {% elif flightMessage %}
     <p>{{flightMessage}}</p>
     {% endif %}
     <br><br>
@@ -253,8 +252,7 @@
     <br>
     {% if airportError %}
     <p class="error">{{airportError}}</p>
-    {% endif %}
-    {% if airportMessage %}
+    {% elif airportMessage %}
     <p>{{airportMessage}}</p>
     {% endif %}
     <br><br>
