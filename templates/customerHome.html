@@ -13,14 +13,11 @@
 
     {% if purchase %}
     <p>{{purchase}}</p>
-    {% endif %}
-    {% if cancel %}
+    {% elif cancel %}
     <p>{{cancel}}</p>
-    {% endif %}
-    {% if cancelError %}
+    {% elif cancelError %}
     <p class="error">{{cancelError}}</p>
-    {% endif %}
-    {% if review %}
+    {% elif review %}
     <p>{{review}}</p>
     {% endif %}
 

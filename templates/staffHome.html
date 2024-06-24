@@ -13,30 +13,26 @@
 
     {% if maintenanceError %}
     <p class="error">{{maintenanceError}}</p>
-    {% endif %}
-    {% if mainMessage %}
+    {% elif mainMessage %}
     <p>{{mainMessage}}</p>
-    {% endif %}
-    {% if mainError %}
+    {% elif mainError %}
     <p class="error">{{mainError}}</p>
-    {% endif %}
-    {% if customerFlightError %}
+    {% elif customerFlightError %}
     <p class="error">{{customerFlightError}}</p>
-    {% endif %}
-    {% if messageFrequent %}
+    {% elif messageFrequent %}
     <p>{{messageFrequent}}</p>
-    {% endif %}
-    {% if addContactRequest %}
+    {% elif addContactRequest %}
     <p>{{addContactRequest}}</p>
-    {% endif %}
-    {% if addContactError %}
+    {% elif addContactError %}
     <p>{{addContactError}}</p>
-    {% endif %}
-    {% if addTicket %}
+    {% elif addTicket %}
     <p>{{addTicket}}</p>
-    {% endif %}
-    {% if addTicketError %}
+    {% elif addTicketError %}
     <p class="error">{{addTicketError}}</p>
+    {% elif airplaneError %}
+    <p class="error">{{airplaneError}}</p>
+    {% elif airplaneMessage %}
+    <p>{{airplaneMessage}}</p>
     {% endif %}
 
     <h3>View airline flights</h3>
@@ -224,15 +220,8 @@
 
         <input type="submit" class="button" value="Add">
     </form>
-    <br>
 
-    {% if airplaneError %}
-    <p class="error">{{airplaneError}}</p>
-    {% endif %}
-    {% if airplaneMessage %}
-    <p>{{airplaneMessage}}</p>
-    {% endif %}
-    <br><br>
+    <br><br><br>
 
     <h3>Add an airport</h3>
     <form action="/addPort" method="POST">
